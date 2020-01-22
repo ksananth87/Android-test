@@ -8,6 +8,7 @@ import com.revolut.androidtest.domain.Country
 import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.Rates
 import io.reactivex.Single
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -69,6 +70,16 @@ class CountryRatesViewModelTest {
         val inOrder = Mockito.inOrder(progressObserver)
         inOrder.verify(progressObserver).onChanged(true)
         inOrder.verify(progressObserver).onChanged(false)
+    }
+
+    @Test
+    fun `should update list when received response from server`() {
+        viewModel.fetchRates()
+
+        Assert.assertNotNull(viewModel.getRates().value)
+        Assert.assertEquals(viewModel.getRates().value?.countryList?.size, 2)
+        Assert.assertEquals(viewModel.getRates().value?.base, "EUR")
+        Assert.assertEquals(viewModel.getRates().value?.date, "2020-11-01")
     }
 
     private fun aDummyRates(): Rates {
