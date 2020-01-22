@@ -1,6 +1,5 @@
 package com.revolut.androidtest.api
 
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.nhaarman.mockitokotlin2.verify
 import com.revolut.androidtest.domain.Rates
@@ -41,17 +40,29 @@ class HttpRateServiceTest{
         assertThat(result.values().first(), `is`(CoreMatchers.instanceOf(Rates::class.java)))
     }
 
+    @Test
+    fun `should parse json and return Rates Model`() {
+        Mockito.`when`(api.getRates()).thenReturn(Single.just(dummyRatesResponse()))
+        val service = HttpRateService(api)
+
+        val result: TestObserver<Rates> = service.getRates().test()
+        val ratesObj = result.values().first()
+
+        assertThat(ratesObj.base, `is`("base"))
+        assertThat(ratesObj.date, `is`("2018-09-06"))
+        assertThat(ratesObj.countryList.size, `is`(4))
+    }
+
     private fun dummyRatesResponse() = JsonObject()
         .apply {
             addProperty("base", "base")
             addProperty("date", "2018-09-06")
 
-            add("rates", JsonArray()
-                .apply {
-                    addProperty("AUD", 1.6173)
-                    addProperty("BGN", 1.9569)
-                    addProperty("INR", 83.763)
-                    addProperty("KRW", "1305.5")
-                })
+            add("rates", JsonObject().apply {
+                        addProperty("AUD",1.6173)
+                        addProperty("BGN", 1.9569)
+                        addProperty("INR", 83.763)
+                        addProperty("KRW", 1305.5)
+                    })
         }
 }
