@@ -1,6 +1,7 @@
 package com.revolut.androidtest.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.verify
 import com.revolut.androidtest.RxTrampolineSchedulerRule
 import com.revolut.androidtest.domain.Country
@@ -13,6 +14,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -25,24 +27,36 @@ class CountryRatesViewModelTest {
     @JvmField
     var testSchedulerRule = RxTrampolineSchedulerRule()
 
-
     @Mock
     private lateinit var service: RateRepository
+
+    @Spy
+    private lateinit var progressObserver: Observer<Boolean>
 
     private lateinit var viewModel: CountryRatesViewModel
 
     @Before
     fun setUp() {
         viewModel = CountryRatesViewModel(service)
+        Mockito.`when`(service.getRates()).thenReturn(Single.just(aDummyRates()))
     }
 
     @Test
     fun `should call getRates service on fragment loaded`() {
-        Mockito.`when`(service.getRates()).thenReturn(Single.just(aDummyRates()))
         viewModel.fetchRates()
 
         verify(service).getRates()
     }
+
+    @Test
+    fun `should show and dismiss progress dialog when response received from service`() {
+        viewModel.showProgressDialog().observeForever(progressObserver)
+
+        viewModel.fetchRates()
+
+        val inOrder = Mockito.inOrder(progressObserver)
+        inOrder.verify(progressObserver).onChanged(true)
+        inOrder.verify(progressObserver).onChanged(false)    }
 
     private fun aDummyRates(): Rates {
         val countryRates = ArrayList<Country>()

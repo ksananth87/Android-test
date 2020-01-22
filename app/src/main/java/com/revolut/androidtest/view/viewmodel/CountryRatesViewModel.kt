@@ -1,5 +1,7 @@
 package com.revolut.androidtest.view.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.Rates
@@ -10,8 +12,10 @@ import io.reactivex.schedulers.Schedulers
 class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewModel() {
 
     private val disposable = CompositeDisposable()
+    private var progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     fun fetchRates() {
+        progressLiveData.value = true
         disposable.add(
             rateRepository.getRates()
                 .subscribeOn(Schedulers.io())
@@ -21,10 +25,14 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     }
 
     private fun handleResponse(rates: Rates) {
-
+        progressLiveData.value = false
     }
 
     private fun handleError(error: Throwable) {
+        progressLiveData.value = false
+    }
 
+    fun showProgressDialog(): LiveData<Boolean> {
+        return progressLiveData
     }
 }
