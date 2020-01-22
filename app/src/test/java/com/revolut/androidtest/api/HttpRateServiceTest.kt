@@ -2,6 +2,7 @@ package com.revolut.androidtest.api
 
 import com.google.gson.JsonObject
 import com.nhaarman.mockitokotlin2.verify
+import com.revolut.androidtest.api.exception.InvalidResponseException
 import com.revolut.androidtest.domain.Rates
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
@@ -56,12 +57,12 @@ class HttpRateServiceTest{
 
     @Test
     fun `should throw exception when api returns error`() {
-        Mockito.`when`(api.getRates()).thenReturn(Single.error(RuntimeException()))
+        Mockito.`when`(api.getRates()).thenReturn(Single.error(InvalidResponseException()))
         val service = HttpRateService(api)
 
         val result: TestObserver<Rates> = service.getRates().test()
 
-        assertThat(result.errors(), hasItem(instanceOf(RuntimeException::class.java)))
+        assertThat(result.errors(), hasItem(instanceOf(InvalidResponseException::class.java)))
     }
 
 
@@ -72,7 +73,7 @@ class HttpRateServiceTest{
 
         val result: TestObserver<Rates> = service.getRates().test()
 
-        assertThat(result.errors(), hasItem(instanceOf(RuntimeException::class.java)))
+        assertThat(result.errors(), hasItem(instanceOf(InvalidResponseException::class.java)))
     }
 
 

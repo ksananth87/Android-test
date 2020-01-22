@@ -1,6 +1,5 @@
 package com.revolut.androidtest.api
 
-import android.util.Log
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.revolut.androidtest.api.exception.InvalidResponseException
@@ -31,7 +30,6 @@ class HttpRateService(private val api: RatesApi): RateRepository {
             }
             return Rates(countryRates, base, date)
         } catch (e: Exception) {
-            Log.e(HttpRateService::class.java.canonicalName, "InvalidResponseException")
             throw InvalidResponseException()
         }
     }
