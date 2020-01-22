@@ -64,6 +64,18 @@ class HttpRateServiceTest{
         assertThat(result.errors(), hasItem(instanceOf(RuntimeException::class.java)))
     }
 
+
+    @Test
+    fun `should throw exception when api returns empty response`() {
+        Mockito.`when`(api.getRates()).thenReturn(Single.just(JsonObject()))
+        val service = HttpRateService(api)
+
+        val result: TestObserver<Rates> = service.getRates().test()
+
+        assertThat(result.errors(), hasItem(instanceOf(RuntimeException::class.java)))
+    }
+
+
     private fun dummyRatesResponse() = JsonObject()
         .apply {
             addProperty("base", "base")
