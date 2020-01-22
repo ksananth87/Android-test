@@ -14,6 +14,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private val disposable = CompositeDisposable()
     private var progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var rateListLiveData: MutableLiveData<Rates> = MutableLiveData()
+    private var errorLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     fun fetchRates() {
         progressLiveData.value = true
@@ -30,8 +31,9 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         rateListLiveData.value = rates
     }
 
-    private fun handleError(error: Throwable) {
+    private fun handleError(throwable: Throwable) {
         progressLiveData.value = false
+        errorLiveData.value = true
     }
 
     fun showProgressDialog(): LiveData<Boolean> {
@@ -40,5 +42,9 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     fun getRates(): LiveData<Rates> {
         return rateListLiveData
+    }
+
+    fun getError(): LiveData<Boolean> {
+        return errorLiveData
     }
 }

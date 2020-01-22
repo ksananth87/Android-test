@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.nhaarman.mockitokotlin2.verify
 import com.revolut.androidtest.RxTrampolineSchedulerRule
+import com.revolut.androidtest.api.exception.InvalidResponseException
 import com.revolut.androidtest.domain.Country
 import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.Rates
@@ -80,6 +81,15 @@ class CountryRatesViewModelTest {
         Assert.assertEquals(viewModel.getRates().value?.countryList?.size, 2)
         Assert.assertEquals(viewModel.getRates().value?.base, "EUR")
         Assert.assertEquals(viewModel.getRates().value?.date, "2020-11-01")
+    }
+
+    @Test
+    fun `should show error when service failed`() {
+        Mockito.`when`(service.getRates()).thenReturn(Single.error(InvalidResponseException()))
+
+        viewModel.fetchRates()
+
+        Assert.assertEquals(viewModel.getError().value, true)
     }
 
     private fun aDummyRates(): Rates {
