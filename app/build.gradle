@@ -50,6 +50,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:3.2.0'
     testImplementation 'org.hamcrest:hamcrest-core:2.1'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 
     //Recycleview
     implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha01'
