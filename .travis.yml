@@ -30,6 +30,12 @@ android:
     - android-${ANDROID_API}
     - build-tools-${ANDROID_BUILD_TOOLS}
     - extra
+    -
+addons:
+  sonarcloud:
+    organization: "ksananth87"
+    token:
+      secure: "eb1b82db1cffdeebb887d3aba7fbc879cfe36986" # encrypted value of your token
 
 script:
   - "./gradlew assemble"
