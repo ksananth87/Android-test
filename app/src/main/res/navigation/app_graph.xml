@@ -1,0 +1,10 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@+id/home">
+    <fragment
+        android:id="@+id/home"
+        android:label=""
+        android:name="com.revolut.androidtest.view.fragment.CountryRatesFragment"
+        tools:layout="@layout/fragment_country_rates" />
+</navigation>
