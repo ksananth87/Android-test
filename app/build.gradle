@@ -59,3 +59,9 @@ dependencies {
     //Lifecycle
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 }
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "ksananth87_Test"
+    }
+}
