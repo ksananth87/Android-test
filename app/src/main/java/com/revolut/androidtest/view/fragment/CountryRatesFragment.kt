@@ -29,9 +29,12 @@ class CountryRatesFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_country_rates, container, false)
 
-        initiateSwipeRefresh()
-
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initiateSwipeRefresh()
     }
 
     private fun initiateSwipeRefresh() {
