@@ -33,3 +33,6 @@ android:
 
 script:
   - "./gradlew assemble"
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -t "7f149f83-970a-4746-901e-0cd8eb3bff1e"
