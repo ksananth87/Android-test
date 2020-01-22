@@ -30,7 +30,7 @@ android:
     - android-${ANDROID_API}
     - build-tools-${ANDROID_BUILD_TOOLS}
     - extra
-    -
+
 addons:
   sonarcloud:
     organization: "ksananth87"
