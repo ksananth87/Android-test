@@ -56,7 +56,20 @@ class CountryRatesViewModelTest {
 
         val inOrder = Mockito.inOrder(progressObserver)
         inOrder.verify(progressObserver).onChanged(true)
-        inOrder.verify(progressObserver).onChanged(false)    }
+        inOrder.verify(progressObserver).onChanged(false)
+    }
+
+    @Test
+    fun `should show and dismiss progress dialog when service failed`() {
+        Mockito.`when`(service.getRates()).thenReturn(Single.error(RuntimeException()))
+        viewModel.showProgressDialog().observeForever(progressObserver)
+
+        viewModel.fetchRates()
+
+        val inOrder = Mockito.inOrder(progressObserver)
+        inOrder.verify(progressObserver).onChanged(true)
+        inOrder.verify(progressObserver).onChanged(false)
+    }
 
     private fun aDummyRates(): Rates {
         val countryRates = ArrayList<Country>()
