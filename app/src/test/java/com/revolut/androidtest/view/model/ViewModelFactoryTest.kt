@@ -1,6 +1,7 @@
 package com.revolut.androidtest.view.model
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.ViewModel
 import com.revolut.androidtest.domain.RateRepository
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.instanceOf
@@ -32,5 +33,10 @@ class ViewModelFactoryTest {
         val viewModel = factory.create(CountryRatesViewModel::class.java)
 
         assertThat(viewModel, `is`(instanceOf(CountryRatesViewModel::class.java)))
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun `should return exception when invalid class provided for viewmodel factory`() {
+        factory.create(ViewModel::class.java)
     }
 }
