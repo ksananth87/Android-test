@@ -1,4 +1,4 @@
-package com.revolut.androidtest.view.model
+package com.revolut.androidtest.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

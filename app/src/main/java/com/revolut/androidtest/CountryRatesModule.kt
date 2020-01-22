@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.revolut.androidtest.api.HttpRateService
 import com.revolut.androidtest.api.RatesApi
-import com.revolut.androidtest.view.model.ViewModelFactory
+import com.revolut.androidtest.view.viewmodel.ViewModelFactory
 import retrofit2.Retrofit
 
 class CountryRatesModule private constructor(){

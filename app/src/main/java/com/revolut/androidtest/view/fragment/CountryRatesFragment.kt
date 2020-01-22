@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.revolut.androidtest.CountryRatesModule
 import com.revolut.androidtest.R
 import com.revolut.androidtest.api.APIClient
-import com.revolut.androidtest.view.model.CountryRatesViewModel
+import com.revolut.androidtest.view.viewmodel.CountryRatesViewModel
 
 class CountryRatesFragment : Fragment() {
 
