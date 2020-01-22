@@ -5,7 +5,8 @@ import com.nhaarman.mockitokotlin2.verify
 import com.revolut.androidtest.domain.Rates
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
-import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.hasItem
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.Is.`is`
 import org.junit.Test
@@ -37,7 +38,7 @@ class HttpRateServiceTest{
 
         val result: TestObserver<Rates> = service.getRates().test()
 
-        assertThat(result.values().first(), `is`(CoreMatchers.instanceOf(Rates::class.java)))
+        assertThat(result.values().first(), `is`(instanceOf(Rates::class.java)))
     }
 
     @Test
@@ -51,6 +52,16 @@ class HttpRateServiceTest{
         assertThat(ratesObj.base, `is`("base"))
         assertThat(ratesObj.date, `is`("2018-09-06"))
         assertThat(ratesObj.countryList.size, `is`(4))
+    }
+
+    @Test
+    fun `should throw exception when api returns error`() {
+        Mockito.`when`(api.getRates()).thenReturn(Single.error(RuntimeException()))
+        val service = HttpRateService(api)
+
+        val result: TestObserver<Rates> = service.getRates().test()
+
+        assertThat(result.errors(), hasItem(instanceOf(RuntimeException::class.java)))
     }
 
     private fun dummyRatesResponse() = JsonObject()
