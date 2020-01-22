@@ -10,6 +10,7 @@ import com.revolut.androidtest.CountryRatesModule
 import com.revolut.androidtest.R
 import com.revolut.androidtest.api.APIClient
 import com.revolut.androidtest.view.viewmodel.CountryRatesViewModel
+import kotlinx.android.synthetic.main.fragment_country_rates.*
 
 class CountryRatesFragment : Fragment() {
 
@@ -26,6 +27,18 @@ class CountryRatesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_country_rates, container, false)
+        val view = inflater.inflate(R.layout.fragment_country_rates, container, false)
+
+        initiateSwipeRefresh()
+
+        return view
+    }
+
+    private fun initiateSwipeRefresh() {
+        swipeRefreshLayout.setOnRefreshListener {
+            swipeRefreshLayout.isRefreshing = false
+            viewModel.fetchRates()
+        }
+        swipeRefreshLayout.isRefreshing = true
     }
 }
