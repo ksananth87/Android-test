@@ -63,6 +63,15 @@ class CountryRatesFragment : Fragment() {
         viewModel.getRates().observe(this, Observer {
             updateCountryList(it)
         })
+
+        viewModel.getError().observe(this, Observer {
+            showErrorScreen(it)
+        })
+    }
+
+    private fun showErrorScreen(it: Boolean?) {
+        countryList.visibility = View.GONE
+        error.visibility = View.VISIBLE
     }
 
     private fun updateSwipeRefresh(progressStatus: Boolean) {
