@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.domain.model.Rates
+import com.revolut.androidtest.view.model.CurrencyList
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -21,7 +22,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private var disposable: Disposable? = null
 
     private var progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    private var rateListLiveData: MutableLiveData<Rates> = MutableLiveData()
+    private var rateListLiveData: MutableLiveData<CurrencyList> = MutableLiveData()
     private var errorLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     fun fragmentLoaded() {
@@ -45,21 +46,21 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         )
     }
 
-    private fun moveBaseCurrencyToFirst(rates: Rates): Rates {
+    private fun moveBaseCurrencyToFirst(rates: Rates): CurrencyList {
         val currencyList: ArrayList<Currency> = rates.countryList
         Collections.swap(
             currencyList,
             currencyList.indexOfFirst { it.code == rates.base },
             ZERO
         )
-        return Rates(currencyList, rates.base, rates.date)
+        return CurrencyList(currencyList)
     }
 
     private fun callEndPoint(aLong: Long) {
         fetchRates()
     }
 
-    private fun handleResponse(rates: Rates) {
+    private fun handleResponse(rates: CurrencyList) {
         progressLiveData.value = false
         rateListLiveData.value = rates
     }
@@ -77,7 +78,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         return progressLiveData
     }
 
-    fun getRates(): LiveData<Rates> {
+    fun getRates(): LiveData<CurrencyList> {
         return rateListLiveData
     }
 

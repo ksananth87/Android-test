@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.revolut.androidtest.CountryRatesModule
 import com.revolut.androidtest.R
 import com.revolut.androidtest.api.APIClient
-import com.revolut.androidtest.domain.model.Rates
 import com.revolut.androidtest.view.adapter.CountryListAdapter
+import com.revolut.androidtest.view.model.CurrencyList
 import com.revolut.androidtest.view.viewmodel.CountryRatesViewModel
 import kotlinx.android.synthetic.main.fragment_country_rates.*
 
@@ -78,9 +78,9 @@ class CountryRatesFragment : Fragment() {
         swipeRefreshLayout.isRefreshing = progressStatus
     }
 
-    private fun updateCountryList(rates: Rates?) {
-        countryListAdapter.setItems(rates!!.countryList)
-        countryListAdapter.setBase(rates.base)
+    private fun updateCountryList(rates: CurrencyList?) {
+        countryListAdapter.setItems(rates!!.currencyList)
+        //countryListAdapter.setBase(rates)
         //viewModel.refreshRatesEveryOneSec()
     }
 

@@ -84,9 +84,7 @@ class CountryRatesViewModelTest {
         viewModel.fragmentLoaded()
 
         Assert.assertNotNull(viewModel.getRates().value)
-        Assert.assertEquals(viewModel.getRates().value?.countryList?.size, 3)
-        Assert.assertEquals(viewModel.getRates().value?.base, "EUR")
-        Assert.assertEquals(viewModel.getRates().value?.date, "2020-11-01")
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.size, 3)
     }
 
     @Test
@@ -102,9 +100,7 @@ class CountryRatesViewModelTest {
     fun `should move base currency to top of currency list`() {
         viewModel.fragmentLoaded()
 
-        Assert.assertEquals(viewModel.getRates().value?.countryList?.size, 3)
-        Assert.assertEquals(viewModel.getRates().value?.countryList?.get(0)?.code, "EUR")
-        Assert.assertEquals(viewModel.getRates().value?.countryList?.get(0)?.rate, 1.0f)
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.size, 3)
     }
 
     @Test
