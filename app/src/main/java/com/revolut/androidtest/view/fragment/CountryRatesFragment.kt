@@ -35,7 +35,7 @@ class CountryRatesFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_country_rates, container, false)
 
-        viewModel.fetchRates()
+        viewModel.fragmentLoaded()
 
         return view
     }
@@ -44,7 +44,7 @@ class CountryRatesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.fetchRates()
+            viewModel.fragmentLoaded()
         }
     }
 
@@ -68,6 +68,7 @@ class CountryRatesFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
             adapter = countryListAdapter
         }
+        viewModel.refreshRatesEveryOneSec()
     }
 
     private fun swapCountry(clickedPos: Int, toPos: Int) {

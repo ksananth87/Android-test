@@ -2,6 +2,7 @@ package com.revolut.androidtest.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.revolut.androidtest.RxTrampolineSchedulerRule
 import com.revolut.androidtest.api.exception.InvalidResponseException
@@ -9,15 +10,15 @@ import com.revolut.androidtest.domain.Country
 import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.Rates
 import io.reactivex.Single
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.TestScheduler
+import org.junit.*
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
+import java.util.concurrent.TimeUnit
 
 @RunWith(MockitoJUnitRunner::class)
 class CountryRatesViewModelTest {
@@ -41,11 +42,15 @@ class CountryRatesViewModelTest {
     fun setUp() {
         viewModel = CountryRatesViewModel(service)
         Mockito.`when`(service.getRates()).thenReturn(Single.just(aDummyRates()))
+        RxJavaPlugins.reset()
     }
+
+    @After
+    fun tearDown() = RxJavaPlugins.reset()
 
     @Test
     fun `should call getRates service on fragment loaded`() {
-        viewModel.fetchRates()
+        viewModel.fragmentLoaded()
 
         verify(service).getRates()
     }
@@ -54,7 +59,7 @@ class CountryRatesViewModelTest {
     fun `should show and dismiss progress dialog when response received from service`() {
         viewModel.showProgressDialog().observeForever(progressObserver)
 
-        viewModel.fetchRates()
+        viewModel.fragmentLoaded()
 
         val inOrder = Mockito.inOrder(progressObserver)
         inOrder.verify(progressObserver).onChanged(true)
@@ -66,7 +71,7 @@ class CountryRatesViewModelTest {
         Mockito.`when`(service.getRates()).thenReturn(Single.error(RuntimeException()))
         viewModel.showProgressDialog().observeForever(progressObserver)
 
-        viewModel.fetchRates()
+        viewModel.fragmentLoaded()
 
         val inOrder = Mockito.inOrder(progressObserver)
         inOrder.verify(progressObserver).onChanged(true)
@@ -75,7 +80,7 @@ class CountryRatesViewModelTest {
 
     @Test
     fun `should update list when received response from server`() {
-        viewModel.fetchRates()
+        viewModel.fragmentLoaded()
 
         Assert.assertNotNull(viewModel.getRates().value)
         Assert.assertEquals(viewModel.getRates().value?.countryList?.size, 2)
@@ -87,9 +92,20 @@ class CountryRatesViewModelTest {
     fun `should show error when service failed`() {
         Mockito.`when`(service.getRates()).thenReturn(Single.error(InvalidResponseException()))
 
-        viewModel.fetchRates()
+        viewModel.fragmentLoaded()
 
         Assert.assertEquals(viewModel.getError().value, true)
+    }
+
+    @Test
+    fun `should call rates every 1 second`() {
+        val testScheduler = TestScheduler()
+        RxJavaPlugins.setComputationSchedulerHandler { testScheduler }
+
+        viewModel.refreshRatesEveryOneSec()
+
+        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
+        verify(service, times(2)).getRates()
     }
 
     private fun aDummyRates(): Rates {

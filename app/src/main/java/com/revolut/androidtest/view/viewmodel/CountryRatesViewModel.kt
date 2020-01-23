@@ -5,25 +5,45 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.Rates
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
+
 
 class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewModel() {
 
-    private val disposable = CompositeDisposable()
+    private val compositeDisposable = CompositeDisposable()
+    private var disposable: Disposable? = null
+
     private var progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var rateListLiveData: MutableLiveData<Rates> = MutableLiveData()
     private var errorLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
-    fun fetchRates() {
+    fun fragmentLoaded() {
         progressLiveData.value = true
-        disposable.add(
+        fetchRates()
+    }
+
+    fun refreshRatesEveryOneSec() {
+        disposable = Observable.interval(1, TimeUnit.SECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this::callEndPoint, this::handleBackgroundError)
+    }
+
+    private fun fetchRates() {
+        compositeDisposable.add(
             rateRepository.getRates()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::handleResponse, this::handleError)
         )
+    }
+
+    private fun callEndPoint(aLong: Long) {
+        fetchRates()
     }
 
     private fun handleResponse(rates: Rates) {
@@ -34,6 +54,10 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private fun handleError(throwable: Throwable) {
         progressLiveData.value = false
         errorLiveData.value = true
+    }
+
+    private fun handleBackgroundError(throwable: Throwable) {
+        //Do nothing
     }
 
     fun showProgressDialog(): LiveData<Boolean> {
@@ -50,6 +74,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     override fun onCleared() {
         super.onCleared()
-        disposable.clear()
+        compositeDisposable.clear()
+        disposable?.dispose()
     }
 }
