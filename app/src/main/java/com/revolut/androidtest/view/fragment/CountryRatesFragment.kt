@@ -20,7 +20,7 @@ class CountryRatesFragment : Fragment() {
 
     private lateinit var viewModel: CountryRatesViewModel
     private val countryListAdapter = CountryListAdapter {
-        swapCountry(it)
+        viewModel.currencyClicked(it)
     }
 
     override fun onAttach(context: Context) {
@@ -66,6 +66,10 @@ class CountryRatesFragment : Fragment() {
 
         viewModel.getError().observe(this, Observer {
             showErrorScreen(it)
+        })
+
+        viewModel.moveCurrencyToTop().observe(this, Observer {
+            swapCountry(it)
         })
     }
 

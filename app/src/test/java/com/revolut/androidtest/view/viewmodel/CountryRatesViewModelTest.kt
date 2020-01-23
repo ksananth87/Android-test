@@ -112,7 +112,7 @@ class CountryRatesViewModelTest {
         viewModel.fragmentLoaded()
 
         //Act
-        viewModel.currencyClicked("INR")
+        viewModel.currencyClicked(1)
 
         //Assert
         Assert.assertEquals("INR", viewModel.getRates().value?.currencyList?.get(0)?.code)

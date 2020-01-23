@@ -44,14 +44,6 @@ class CountryListAdapter(private val listener: (Int) -> Unit) :
 
     fun moveItem(clickedPos: Int, toPosition: Int) {
         if (clickedPos == toPosition) return
-
-        val movingItem: Currency = this.rates.removeAt(clickedPos)
-        if (clickedPos < toPosition) {
-            this.rates.add(toPosition - 1, movingItem)
-        } else {
-            this.rates.add(toPosition, movingItem)
-        }
-
         notifyItemMoved(clickedPos, toPosition)
     }
 

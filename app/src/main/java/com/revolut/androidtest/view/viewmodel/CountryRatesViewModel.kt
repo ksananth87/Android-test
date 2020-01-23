@@ -38,8 +38,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
             .subscribe(this::callEndPoint) { this.handleBackgroundError(it) }
     }
 
-    fun currencyClicked(code: String) {
-        val clickedCurrencyIndex: Int = rates.currencyList.indexOfFirst { it.code == code }
+    fun currencyClicked(clickedCurrencyIndex: Int) {
         moveClickedCurrencyToTop(clickedCurrencyIndex)
         swapCurrency(clickedCurrencyIndex)
     }
