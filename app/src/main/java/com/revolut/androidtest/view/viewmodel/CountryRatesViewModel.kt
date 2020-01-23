@@ -3,6 +3,7 @@ package com.revolut.androidtest.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.revolut.androidtest.domain.Country
 import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.Rates
 import io.reactivex.Observable
@@ -10,6 +11,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -36,10 +38,21 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private fun fetchRates() {
         compositeDisposable.add(
             rateRepository.getRates()
+                .map { moveBaseCurrencyToFirst(it) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::handleResponse, this::handleError)
         )
+    }
+
+    private fun moveBaseCurrencyToFirst(rates: Rates): Rates {
+        val currencyList: ArrayList<Country> = rates.countryList
+        Collections.swap(
+            currencyList,
+            currencyList.indexOfFirst { it.countryCurrency == rates.base },
+            ZERO
+        )
+        return Rates(currencyList, rates.base, rates.date)
     }
 
     private fun callEndPoint(aLong: Long) {
@@ -76,5 +89,9 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         super.onCleared()
         compositeDisposable.clear()
         disposable?.dispose()
+    }
+
+    companion object{
+        private const val ZERO = 0
     }
 }

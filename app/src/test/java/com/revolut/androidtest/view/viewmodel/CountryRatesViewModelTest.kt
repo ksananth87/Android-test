@@ -84,7 +84,7 @@ class CountryRatesViewModelTest {
         viewModel.fragmentLoaded()
 
         Assert.assertNotNull(viewModel.getRates().value)
-        Assert.assertEquals(viewModel.getRates().value?.countryList?.size, 2)
+        Assert.assertEquals(viewModel.getRates().value?.countryList?.size, 3)
         Assert.assertEquals(viewModel.getRates().value?.base, "EUR")
         Assert.assertEquals(viewModel.getRates().value?.date, "2020-11-01")
     }
@@ -96,6 +96,15 @@ class CountryRatesViewModelTest {
         viewModel.fragmentLoaded()
 
         Assert.assertEquals(viewModel.getError().value, true)
+    }
+
+    @Test
+    fun `should move base currency to top of currency list`() {
+        viewModel.fragmentLoaded()
+
+        Assert.assertEquals(viewModel.getRates().value?.countryList?.size, 3)
+        Assert.assertEquals(viewModel.getRates().value?.countryList?.get(0)?.countryCurrency, "EUR")
+        Assert.assertEquals(viewModel.getRates().value?.countryList?.get(0)?.rate, 1.0f)
     }
 
     @Test
@@ -113,6 +122,7 @@ class CountryRatesViewModelTest {
         val countryRates = ArrayList<Country>()
         countryRates.add(Country("INR", 85.33f))
         countryRates.add(Country("USA", 1f))
+        countryRates.add(Country("EUR", 1.0f))
         return Rates(countryRates, "EUR", "2020-11-01")
     }
 }

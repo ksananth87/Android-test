@@ -27,10 +27,10 @@ class CountryListAdapter(private val listener: (Int) -> Unit) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val country: Country = rates[position]
-        holder.tvCountryCurrency.text = country.countryName
-        holder.tvCountryFullCurrency.text = CountryInfo.valueOf(country.countryName).countryFullName
+        holder.tvCountryCurrency.text = country.countryCurrency
+        holder.tvCountryFullCurrency.text = CountryInfo.valueOf(country.countryCurrency).countryFullName
         holder.etRate.setText(country.rate.toString())
-        holder.imgCountryFlag.loadImage(CountryInfo.valueOf(country.countryName).countryIcon)
+        holder.imgCountryFlag.loadImage(CountryInfo.valueOf(country.countryCurrency).countryIcon)
         holder.itemView.setOnClickListener {
             country.let { listener.invoke(position) }
         }
