@@ -16,6 +16,6 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayShowTitleEnabled(false);
 
         val title: TextView = findViewById(R.id.toolbar_main_title)
-        title.text = getString(R.string.app_name)
+        title.text = getString(R.string.title)
     }
 }
