@@ -12,7 +12,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -48,12 +47,13 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     private fun moveBaseCurrencyToFirst(rates: Rates): CurrencyList {
         val currencyList: ArrayList<Currency> = rates.countryList
-        Collections.swap(
-            currencyList,
-            currencyList.indexOfFirst { it.code == rates.base },
-            ZERO
-        )
-        return CurrencyList(currencyList)
+        val baseCurrencyIndex: Int = currencyList.indexOfFirst { it.code == rates.base }
+        val baseCurrency: Currency = currencyList[baseCurrencyIndex]
+        val sortedList: java.util.ArrayList<Currency> = currencyList.apply {
+            removeAt(baseCurrencyIndex)
+            add(0, baseCurrency)
+        }
+        return CurrencyList(sortedList)
     }
 
     private fun callEndPoint(aLong: Long) {

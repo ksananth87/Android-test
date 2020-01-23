@@ -101,6 +101,9 @@ class CountryRatesViewModelTest {
         viewModel.fragmentLoaded()
 
         Assert.assertEquals(viewModel.getRates().value?.currencyList?.size, 3)
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(0)?.code, "EUR")
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(1)?.code, "INR")
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(2)?.code, "USA")
     }
 
     @Test
