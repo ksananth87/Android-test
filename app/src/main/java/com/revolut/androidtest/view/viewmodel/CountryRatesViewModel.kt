@@ -47,4 +47,9 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     fun getError(): LiveData<Boolean> {
         return errorLiveData
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposable.clear()
+    }
 }
