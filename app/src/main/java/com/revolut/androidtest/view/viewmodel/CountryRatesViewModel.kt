@@ -86,9 +86,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         return CurrencyList(currencyList)
     }
 
-    private fun callEndPoint(aLong: Long) {
-        fetchRates()
-    }
+    private fun callEndPoint(aLong: Long) = fetchRates()
 
     private fun handleResponse(rates: CurrencyList) {
         progressLiveData.value = false
@@ -101,25 +99,15 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         errorLiveData.value = true
     }
 
-    private fun handleBackgroundError(throwable: Throwable) {
-        //Do nothing
-    }
+    private fun handleBackgroundError(throwable: Throwable) = Unit //Do nothing
 
-    fun showProgressDialog(): LiveData<Boolean> {
-        return progressLiveData
-    }
+    fun showProgressDialog(): LiveData<Boolean> = progressLiveData
 
-    fun getRates(): LiveData<CurrencyList> {
-        return rateListLiveData
-    }
+    fun getRates(): LiveData<CurrencyList> = rateListLiveData
 
-    fun getError(): LiveData<Boolean> {
-        return errorLiveData
-    }
+    fun getError(): LiveData<Boolean> = errorLiveData
 
-    fun moveCurrencyToTop(): LiveData<Int> {
-        return moveCurrencyIndexLiveData
-    }
+    fun moveCurrencyToTop(): LiveData<Int> = moveCurrencyIndexLiveData
 
     override fun onCleared() {
         super.onCleared()
