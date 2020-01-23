@@ -7,7 +7,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.revolut.androidtest.RxTrampolineSchedulerRule
 import com.revolut.androidtest.api.exception.InvalidResponseException
 import com.revolut.androidtest.domain.RateRepository
-import com.revolut.androidtest.domain.model.Country
+import com.revolut.androidtest.domain.model.CountryCurrency
 import com.revolut.androidtest.domain.model.Rates
 import io.reactivex.Single
 import io.reactivex.plugins.RxJavaPlugins
@@ -103,7 +103,7 @@ class CountryRatesViewModelTest {
         viewModel.fragmentLoaded()
 
         Assert.assertEquals(viewModel.getRates().value?.countryList?.size, 3)
-        Assert.assertEquals(viewModel.getRates().value?.countryList?.get(0)?.countryCurrency, "EUR")
+        Assert.assertEquals(viewModel.getRates().value?.countryList?.get(0)?.currency, "EUR")
         Assert.assertEquals(viewModel.getRates().value?.countryList?.get(0)?.rate, 1.0f)
     }
 
@@ -119,10 +119,10 @@ class CountryRatesViewModelTest {
     }
 
     private fun aDummyRates(): Rates {
-        val countryRates = ArrayList<Country>()
-        countryRates.add(Country("INR", 85.33f))
-        countryRates.add(Country("USA", 1f))
-        countryRates.add(Country("EUR", 1.0f))
+        val countryRates = ArrayList<CountryCurrency>()
+        countryRates.add(CountryCurrency("INR", 85.33f))
+        countryRates.add(CountryCurrency("USA", 1f))
+        countryRates.add(CountryCurrency("EUR", 1.0f))
         return Rates(countryRates, "EUR", "2020-11-01")
     }
 }

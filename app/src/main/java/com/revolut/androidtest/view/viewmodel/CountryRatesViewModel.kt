@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.revolut.androidtest.domain.RateRepository
-import com.revolut.androidtest.domain.model.Country
+import com.revolut.androidtest.domain.model.CountryCurrency
 import com.revolut.androidtest.domain.model.Rates
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -46,10 +46,10 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     }
 
     private fun moveBaseCurrencyToFirst(rates: Rates): Rates {
-        val currencyList: ArrayList<Country> = rates.countryList
+        val currencyList: ArrayList<CountryCurrency> = rates.countryList
         Collections.swap(
             currencyList,
-            currencyList.indexOfFirst { it.countryCurrency == rates.base },
+            currencyList.indexOfFirst { it.currency == rates.base },
             ZERO
         )
         return Rates(currencyList, rates.base, rates.date)
