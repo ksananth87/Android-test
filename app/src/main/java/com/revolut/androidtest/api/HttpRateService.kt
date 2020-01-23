@@ -3,9 +3,9 @@ package com.revolut.androidtest.api
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.revolut.androidtest.api.exception.InvalidResponseException
-import com.revolut.androidtest.domain.Country
 import com.revolut.androidtest.domain.RateRepository
-import com.revolut.androidtest.domain.Rates
+import com.revolut.androidtest.domain.model.Country
+import com.revolut.androidtest.domain.model.Rates
 import io.reactivex.Single
 
 

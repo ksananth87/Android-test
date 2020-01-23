@@ -6,9 +6,9 @@ import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.revolut.androidtest.RxTrampolineSchedulerRule
 import com.revolut.androidtest.api.exception.InvalidResponseException
-import com.revolut.androidtest.domain.Country
 import com.revolut.androidtest.domain.RateRepository
-import com.revolut.androidtest.domain.Rates
+import com.revolut.androidtest.domain.model.Country
+import com.revolut.androidtest.domain.model.Rates
 import io.reactivex.Single
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.TestScheduler

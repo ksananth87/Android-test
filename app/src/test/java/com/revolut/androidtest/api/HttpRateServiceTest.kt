@@ -3,7 +3,7 @@ package com.revolut.androidtest.api
 import com.google.gson.JsonObject
 import com.nhaarman.mockitokotlin2.verify
 import com.revolut.androidtest.api.exception.InvalidResponseException
-import com.revolut.androidtest.domain.Rates
+import com.revolut.androidtest.domain.model.Rates
 import io.reactivex.Single
 import io.reactivex.observers.TestObserver
 import org.hamcrest.CoreMatchers.hasItem

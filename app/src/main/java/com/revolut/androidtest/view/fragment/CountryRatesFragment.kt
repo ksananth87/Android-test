@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.revolut.androidtest.CountryRatesModule
 import com.revolut.androidtest.R
 import com.revolut.androidtest.api.APIClient
-import com.revolut.androidtest.domain.Rates
+import com.revolut.androidtest.domain.model.Rates
 import com.revolut.androidtest.view.adapter.CountryListAdapter
 import com.revolut.androidtest.view.viewmodel.CountryRatesViewModel
 import kotlinx.android.synthetic.main.fragment_country_rates.*

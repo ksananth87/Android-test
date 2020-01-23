@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.revolut.androidtest.R
-import com.revolut.androidtest.domain.Country
+import com.revolut.androidtest.domain.model.Country
 import com.revolut.androidtest.view.extensions.loadImage
 
 class CountryListAdapter(private val listener: (Int) -> Unit) :

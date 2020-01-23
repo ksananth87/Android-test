@@ -3,9 +3,9 @@ package com.revolut.androidtest.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.revolut.androidtest.domain.Country
 import com.revolut.androidtest.domain.RateRepository
-import com.revolut.androidtest.domain.Rates
+import com.revolut.androidtest.domain.model.Country
+import com.revolut.androidtest.domain.model.Rates
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
