@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.revolut.androidtest.CountryRatesModule
 import com.revolut.androidtest.R
 import com.revolut.androidtest.api.APIClient
@@ -19,7 +20,9 @@ class CountryRatesFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = CountryRatesModule.create(APIClient().getClient()).getViewModelFor(this, CountryRatesViewModel::class.java)
-
+        viewModel.showProgressDialog().observe(this, Observer {
+            updateSwipeRefresh(it)
+        })
     }
 
     override fun onCreateView(
@@ -29,19 +32,16 @@ class CountryRatesFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_country_rates, container, false)
 
+        viewModel.fetchRates()
+
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initiateSwipeRefresh()
     }
 
-    private fun initiateSwipeRefresh() {
-        swipeRefreshLayout.setOnRefreshListener {
-            swipeRefreshLayout.isRefreshing = false
-            viewModel.fetchRates()
-        }
-        swipeRefreshLayout.isRefreshing = true
+    private fun updateSwipeRefresh(progressStatus: Boolean) {
+        swipeRefreshLayout.isRefreshing = progressStatus
     }
 }
