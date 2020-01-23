@@ -20,11 +20,13 @@ class CountryRatesFragment : Fragment() {
 
     private lateinit var viewModel: CountryRatesViewModel
     private val countryListAdapter = CountryListAdapter {
-        swapCountry(it, 0)
+        swapCountry(it)
     }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        viewModel = CountryRatesModule.create(APIClient().getClient()).getViewModelFor(this, CountryRatesViewModel::class.java)
+        viewModel = CountryRatesModule.create(APIClient().getClient())
+            .getViewModelFor(this, CountryRatesViewModel::class.java)
         setupObservers()
     }
 
@@ -73,8 +75,8 @@ class CountryRatesFragment : Fragment() {
         //viewModel.refreshRatesEveryOneSec()
     }
 
-    private fun swapCountry(clickedPos: Int, toPos: Int) {
-        countryListAdapter.moveItem(clickedPos, toPos)
+    private fun swapCountry(clickedPos: Int) {
+        countryListAdapter.moveItem(clickedPos, 0)
         countryList.scrollToPosition(0)
     }
 }
