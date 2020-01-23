@@ -41,6 +41,11 @@ class CountryListAdapter(private val listener: (Int) -> Unit) :
         notifyDataSetChanged()
     }
 
+    fun updateItems(newItems: List<Currency>) {
+        rates.clear()
+        rates.addAll(newItems)
+    }
+
     fun moveItem(clickedPos: Int, toPosition: Int) {
         if (clickedPos == toPosition) return
         notifyItemMoved(clickedPos, toPosition)

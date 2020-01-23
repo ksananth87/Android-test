@@ -91,5 +91,6 @@ class CountryRatesFragment : Fragment() {
     private fun swapCountry(clickedPos: Int) {
         countryListAdapter.moveItem(clickedPos, 0)
         countryList.scrollToPosition(0)
+        countryListAdapter.updateItems(viewModel.getCachedRates())
     }
 }

@@ -43,6 +43,10 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
             swapCurrency(clickedCurrencyIndex)
     }
 
+    fun getCachedRates(): List<Currency> {
+        return rates.currencyList
+    }
+
     private fun moveClickedCurrencyToTop(clickedCurrencyIndex: Int) {
         moveCurrencyIndexLiveData.value = clickedCurrencyIndex
     }
