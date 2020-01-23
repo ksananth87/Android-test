@@ -1,12 +1,10 @@
 package com.revolut.androidtest.view.fragment
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +19,9 @@ import kotlinx.android.synthetic.main.fragment_country_rates.*
 class CountryRatesFragment : Fragment() {
 
     private lateinit var viewModel: CountryRatesViewModel
-    private lateinit var countryListAdapter: CountryListAdapter
+    private val countryListAdapter = CountryListAdapter {
+        swapCountry(it, 0)
+    }
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = CountryRatesModule.create(APIClient().getClient()).getViewModelFor(this, CountryRatesViewModel::class.java)
@@ -46,6 +46,12 @@ class CountryRatesFragment : Fragment() {
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.fragmentLoaded()
         }
+
+        with(countryList) {
+            setHasFixedSize(true)
+            adapter = countryListAdapter
+            layoutManager = LinearLayoutManager(context)
+        }
     }
 
     private fun setupObservers() {
@@ -61,14 +67,10 @@ class CountryRatesFragment : Fragment() {
         swipeRefreshLayout.isRefreshing = progressStatus
     }
 
-    @SuppressLint("WrongConstant")
     private fun updateCountryList(rates: Rates?) {
-        countryListAdapter = CountryListAdapter(rates!!, listener = { swapCountry(it, 0) })
-        countryList.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-            adapter = countryListAdapter
-        }
-        viewModel.refreshRatesEveryOneSec()
+        countryListAdapter.setItems(rates!!.countryList)
+        countryListAdapter.setBase(rates.base)
+        //viewModel.refreshRatesEveryOneSec()
     }
 
     private fun swapCountry(clickedPos: Int, toPos: Int) {

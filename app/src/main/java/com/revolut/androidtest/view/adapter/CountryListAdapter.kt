@@ -9,11 +9,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.revolut.androidtest.R
 import com.revolut.androidtest.domain.Country
-import com.revolut.androidtest.domain.Rates
 import com.revolut.androidtest.view.extensions.loadImage
 
-class CountryListAdapter(private val rates: Rates, private val listener: (Int) -> Unit) :
+class CountryListAdapter(private val listener: (Int) -> Unit) :
     RecyclerView.Adapter<CountryListAdapter.ViewHolder>() {
+    private var rates: MutableList<Country> = mutableListOf()
+    private var base = String()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_country_list, parent, false)
@@ -21,11 +22,11 @@ class CountryListAdapter(private val rates: Rates, private val listener: (Int) -
     }
 
     override fun getItemCount(): Int {
-        return rates.countryList.size
+        return rates.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val country: Country = rates.countryList[position]
+        val country: Country = rates[position]
         holder.tvCountryCurrency.text = country.countryName
         holder.tvCountryFullCurrency.text = CountryInfo.valueOf(country.countryName).countryFullName
         holder.etRate.setText(country.rate.toString())
@@ -35,14 +36,24 @@ class CountryListAdapter(private val rates: Rates, private val listener: (Int) -
         }
     }
 
+    fun setItems(newItems: List<Country>) {
+        rates.clear()
+        rates.addAll(newItems)
+        notifyDataSetChanged()
+    }
+
+    fun setBase(base: String) {
+        this.base = base
+    }
+
     fun moveItem(clickedPos: Int, toPosition: Int) {
         if (clickedPos == toPosition) return
 
-        val movingItem: Country = this.rates.countryList.removeAt(clickedPos)
+        val movingItem: Country = this.rates.removeAt(clickedPos)
         if (clickedPos < toPosition) {
-            this.rates.countryList.add(toPosition - 1, movingItem)
+            this.rates.add(toPosition - 1, movingItem)
         } else {
-            this.rates.countryList.add(toPosition, movingItem)
+            this.rates.add(toPosition, movingItem)
         }
 
         notifyItemMoved(clickedPos, toPosition)
