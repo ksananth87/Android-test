@@ -8,12 +8,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.revolut.androidtest.R
-import com.revolut.androidtest.domain.model.CountryCurrency
+import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.view.extensions.loadImage
 
 class CountryListAdapter(private val listener: (Int) -> Unit) :
     RecyclerView.Adapter<CountryListAdapter.ViewHolder>() {
-    private var rates: MutableList<CountryCurrency> = mutableListOf()
+    private var rates: MutableList<Currency> = mutableListOf()
     private var base = String()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,17 +26,17 @@ class CountryListAdapter(private val listener: (Int) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val country: CountryCurrency = rates[position]
-        holder.tvCountryCurrency.text = country.currency
-        holder.tvCountryFullCurrency.text = CountryInfo.valueOf(country.currency).countryFullName
+        val country: Currency = rates[position]
+        holder.tvCountryCurrency.text = country.code
+        holder.tvCountryFullCurrency.text = CountryInfo.valueOf(country.code).countryFullName
         holder.etRate.setText(country.rate.toString())
-        holder.imgCountryFlag.loadImage(CountryInfo.valueOf(country.currency).countryIcon)
+        holder.imgCountryFlag.loadImage(CountryInfo.valueOf(country.code).countryIcon)
         holder.itemView.setOnClickListener {
             country.let { listener.invoke(position) }
         }
     }
 
-    fun setItems(newItems: List<CountryCurrency>) {
+    fun setItems(newItems: List<Currency>) {
         rates.clear()
         rates.addAll(newItems)
         notifyDataSetChanged()
@@ -49,7 +49,7 @@ class CountryListAdapter(private val listener: (Int) -> Unit) :
     fun moveItem(clickedPos: Int, toPosition: Int) {
         if (clickedPos == toPosition) return
 
-        val movingItem: CountryCurrency = this.rates.removeAt(clickedPos)
+        val movingItem: Currency = this.rates.removeAt(clickedPos)
         if (clickedPos < toPosition) {
             this.rates.add(toPosition - 1, movingItem)
         } else {
