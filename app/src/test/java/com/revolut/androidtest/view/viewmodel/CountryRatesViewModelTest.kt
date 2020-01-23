@@ -46,7 +46,7 @@ class CountryRatesViewModelTest {
     @Before
     fun setUp() {
         viewModel = CountryRatesViewModel(service)
-        `when`(service.getRates()).thenReturn(Single.just(aDummyRates()))
+        `when`(service.getRates()).thenReturn(Single.just(aDummyRates(base = "EUR")))
     }
 
     @Test
@@ -107,6 +107,18 @@ class CountryRatesViewModelTest {
     }
 
     @Test
+    fun `should return as-is currency list when base currency is not in currency list`() {
+        `when`(service.getRates()).thenReturn(Single.just(aDummyRates(base = "YEN")))
+
+        viewModel.fragmentLoaded()
+
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.size, 3)
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(0)?.code, "INR")
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(1)?.code, "USA")
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(2)?.code, "EUR")
+    }
+
+    @Test
     fun `should move clicked item to first in the currency rate list`() {
         //Arrange
         viewModel.fragmentLoaded()
@@ -132,11 +144,11 @@ class CountryRatesViewModelTest {
         verify(service, times(2)).getRates()
     }
 
-    private fun aDummyRates(): Rates {
+    private fun aDummyRates(base: String): Rates {
         val countryRates = ArrayList<Currency>()
         countryRates.add(Currency("INR", 85.33f))
         countryRates.add(Currency("USA", 1f))
         countryRates.add(Currency("EUR", 1.0f))
-        return Rates(countryRates, "EUR", "2020-11-01")
+        return Rates(countryRates, base, "2020-11-01")
     }
 }

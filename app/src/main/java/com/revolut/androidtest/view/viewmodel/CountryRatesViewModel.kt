@@ -71,12 +71,15 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private fun moveBaseCurrencyToFirst(rates: Rates): CurrencyList {
         val currencyList: ArrayList<Currency> = rates.countryList
         val baseCurrencyIndex: Int = currencyList.indexOfFirst { it.code == rates.base }
-        val baseCurrency: Currency = currencyList[baseCurrencyIndex]
-        val sortedList: java.util.ArrayList<Currency> = currencyList.apply {
-            removeAt(baseCurrencyIndex)
-            add(ZERO, baseCurrency)
+        if(baseCurrencyIndex != -1) {
+            val baseCurrency: Currency = currencyList[baseCurrencyIndex]
+            val sortedList: ArrayList<Currency> = currencyList.apply {
+                removeAt(baseCurrencyIndex)
+                add(ZERO, baseCurrency)
+            }
+            return CurrencyList(sortedList)
         }
-        return CurrencyList(sortedList)
+        return CurrencyList(currencyList)
     }
 
     private fun callEndPoint(aLong: Long) {
