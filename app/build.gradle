@@ -1,9 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: "org.sonarqube"
-apply plugin: 'jacoco'
-apply plugin: 'jacoco-android'
+apply from: '../jacoco.gradle'
 
 android {
     compileSdkVersion 29
@@ -39,8 +37,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     //Navigation
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.1.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.1.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.2.0'
 
     //Testing
 
@@ -59,7 +57,7 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha03"
 
     //Glide
-    implementation "com.github.bumptech.glide:glide:4.9.0"
+    implementation "com.github.bumptech.glide:glide:4.10.0"
 
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.7.0'
@@ -77,5 +75,14 @@ dependencies {
 sonarqube {
     properties {
         property "sonar.projectKey", "ksananth87_Test"
+        property "sonar.sources", "${project.projectDir}/src/main/java"
+        property "sonar.tests", "${project.projectDir}/src/test/java"
+        property "sonar.junit.reportPaths", "${project.buildDir}/test-results/testDebugUnitTest"
+        property "sonar.coverage.exclusions", "**/Channel.java,**/LoggerUtils.java,**/RegexUtils.java,**/AdobeValues.java,**/analytics/cases/**/*"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.android.lint.report", "${project.buildDir}/outputs/lint-results.xml"
+        property "sonar.java.binaries", "${project.buildDir}/intermediates/javac/debug/compileDebugJavaWithJavac/classes,${project.buildDir}/tmp/kotlin-classes/debug"
+        property "sonar.test.binaries", "${project.buildDir}/intermediates/javac/debugUnitTest/compileDebugUnitTestJavaWithJavac/classes/,${project.buildDir}/tmp/kotlin-classes/debug"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml"
     }
 }

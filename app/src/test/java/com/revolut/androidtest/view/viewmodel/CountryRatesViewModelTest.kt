@@ -12,10 +12,15 @@ import com.revolut.androidtest.domain.Rates
 import io.reactivex.Single
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.TestScheduler
-import org.junit.*
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.InOrder
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.inOrder
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
 import java.util.concurrent.TimeUnit
@@ -41,12 +46,8 @@ class CountryRatesViewModelTest {
     @Before
     fun setUp() {
         viewModel = CountryRatesViewModel(service)
-        Mockito.`when`(service.getRates()).thenReturn(Single.just(aDummyRates()))
-        RxJavaPlugins.reset()
+        `when`(service.getRates()).thenReturn(Single.just(aDummyRates()))
     }
-
-    @After
-    fun tearDown() = RxJavaPlugins.reset()
 
     @Test
     fun `should call getRates service on fragment loaded`() {
@@ -61,19 +62,19 @@ class CountryRatesViewModelTest {
 
         viewModel.fragmentLoaded()
 
-        val inOrder = Mockito.inOrder(progressObserver)
+        val inOrder: InOrder = inOrder(progressObserver)
         inOrder.verify(progressObserver).onChanged(true)
         inOrder.verify(progressObserver).onChanged(false)
     }
 
     @Test
     fun `should show and dismiss progress dialog when service failed`() {
-        Mockito.`when`(service.getRates()).thenReturn(Single.error(RuntimeException()))
+        `when`(service.getRates()).thenReturn(Single.error(RuntimeException()))
         viewModel.showProgressDialog().observeForever(progressObserver)
 
         viewModel.fragmentLoaded()
 
-        val inOrder = Mockito.inOrder(progressObserver)
+        val inOrder = inOrder(progressObserver)
         inOrder.verify(progressObserver).onChanged(true)
         inOrder.verify(progressObserver).onChanged(false)
     }
@@ -90,7 +91,7 @@ class CountryRatesViewModelTest {
 
     @Test
     fun `should show error when service failed`() {
-        Mockito.`when`(service.getRates()).thenReturn(Single.error(InvalidResponseException()))
+        `when`(service.getRates()).thenReturn(Single.error(InvalidResponseException()))
 
         viewModel.fragmentLoaded()
 
