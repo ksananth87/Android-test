@@ -7,9 +7,9 @@ import com.revolut.androidtest.R
 
 fun ImageView.loadImage(uri: Int?) {
     val options: RequestOptions = RequestOptions()
-        .placeholder(R.drawable.ic_launcher_background)
+        .placeholder(R.drawable.ic_empty)
         .circleCrop()
-        .error(R.mipmap.ic_launcher_round)
+        .error(R.drawable.ic_error)
     Glide.with(this.context)
         .setDefaultRequestOptions(options)
         .load(uri)
