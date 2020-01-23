@@ -12,6 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -23,6 +24,8 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private var progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var rateListLiveData: MutableLiveData<CurrencyList> = MutableLiveData()
     private var errorLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    private var moveCurrencyIndexLiveData: MutableLiveData<Int> = MutableLiveData()
+    private lateinit var rates: CurrencyList
 
     fun fragmentLoaded() {
         progressLiveData.value = true
@@ -32,7 +35,28 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     fun refreshRatesEveryOneSec() {
         disposable = Observable.interval(1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::callEndPoint, this::handleBackgroundError)
+            .subscribe(this::callEndPoint) { this.handleBackgroundError(it) }
+    }
+
+    fun currencyClicked(code: String) {
+        val clickedCurrencyIndex: Int = rates.currencyList.indexOfFirst { it.code == code }
+        moveClickedCurrencyToTop(clickedCurrencyIndex)
+        swapCurrency(clickedCurrencyIndex)
+    }
+
+    private fun moveClickedCurrencyToTop(clickedCurrencyIndex: Int) {
+        moveCurrencyIndexLiveData.value = clickedCurrencyIndex
+    }
+
+    private fun swapCurrency(clickedIndex: Int) {
+        val currencyList: ArrayList<Currency> = rates.currencyList
+        Collections.swap(
+            currencyList,
+            clickedIndex,
+            ZERO
+        )
+        rates.currencyList = currencyList
+        rateListLiveData.value = rates
     }
 
     private fun fetchRates() {
@@ -51,7 +75,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         val baseCurrency: Currency = currencyList[baseCurrencyIndex]
         val sortedList: java.util.ArrayList<Currency> = currencyList.apply {
             removeAt(baseCurrencyIndex)
-            add(0, baseCurrency)
+            add(ZERO, baseCurrency)
         }
         return CurrencyList(sortedList)
     }
@@ -63,6 +87,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private fun handleResponse(rates: CurrencyList) {
         progressLiveData.value = false
         rateListLiveData.value = rates
+        this.rates = rates
     }
 
     private fun handleError(throwable: Throwable) {
@@ -84,6 +109,10 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     fun getError(): LiveData<Boolean> {
         return errorLiveData
+    }
+
+    fun moveCurrencyToTop(): LiveData<Int> {
+        return moveCurrencyIndexLiveData
     }
 
     override fun onCleared() {

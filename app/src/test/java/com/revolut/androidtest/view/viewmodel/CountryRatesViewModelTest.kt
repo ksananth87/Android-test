@@ -107,6 +107,21 @@ class CountryRatesViewModelTest {
     }
 
     @Test
+    fun `should move clicked item to first in the currency rate list`() {
+        //Arrange
+        viewModel.fragmentLoaded()
+
+        //Act
+        viewModel.currencyClicked("INR")
+
+        //Assert
+        Assert.assertEquals("INR", viewModel.getRates().value?.currencyList?.get(0)?.code)
+        Assert.assertEquals("EUR", viewModel.getRates().value?.currencyList?.get(1)?.code)
+        Assert.assertEquals("USA", viewModel.getRates().value?.currencyList?.get(2)?.code)
+        Assert.assertEquals( 1, viewModel.moveCurrencyToTop().value)
+    }
+
+    @Test
     fun `should call rates every 1 second`() {
         val testScheduler = TestScheduler()
         RxJavaPlugins.setComputationSchedulerHandler { testScheduler }

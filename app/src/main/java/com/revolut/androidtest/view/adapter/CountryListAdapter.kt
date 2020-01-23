@@ -42,10 +42,6 @@ class CountryListAdapter(private val listener: (Int) -> Unit) :
         notifyDataSetChanged()
     }
 
-    fun setBase(base: String) {
-        this.base = base
-    }
-
     fun moveItem(clickedPos: Int, toPosition: Int) {
         if (clickedPos == toPosition) return
 
