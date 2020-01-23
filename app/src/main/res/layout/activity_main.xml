@@ -13,7 +13,7 @@
         android:id="@+id/toolbar_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@color/white"
         android:minHeight="?attr/actionBarSize"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -23,7 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
+            android:text="@string/title"
             android:textSize="16sp"
             android:textStyle="bold"
             tools:text="app name" />

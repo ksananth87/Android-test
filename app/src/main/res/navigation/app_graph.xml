@@ -4,7 +4,6 @@
     app:startDestination="@+id/home">
     <fragment
         android:id="@+id/home"
-        android:label=""
         android:name="com.revolut.androidtest.view.fragment.CountryRatesFragment"
         tools:layout="@layout/fragment_country_rates" />
 </navigation>
