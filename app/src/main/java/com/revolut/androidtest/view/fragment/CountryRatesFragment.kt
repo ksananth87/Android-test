@@ -40,6 +40,14 @@ class CountryRatesFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.fetchRates()
+        }
+    }
+
     private fun setupObservers() {
         viewModel.showProgressDialog().observe(this, Observer {
             updateSwipeRefresh(it)
