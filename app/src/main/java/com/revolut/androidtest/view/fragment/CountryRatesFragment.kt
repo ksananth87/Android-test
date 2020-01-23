@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_country_rates.*
 class CountryRatesFragment : Fragment() {
 
     private lateinit var viewModel: CountryRatesViewModel
-
+    private lateinit var countryListAdapter: CountryListAdapter
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = CountryRatesModule.create(APIClient().getClient()).getViewModelFor(this, CountryRatesViewModel::class.java)
@@ -55,10 +55,15 @@ class CountryRatesFragment : Fragment() {
 
     @SuppressLint("WrongConstant")
     private fun updateCountryList(rates: Rates?) {
-        val countryListAdapter = CountryListAdapter(rates!!)
+        countryListAdapter = CountryListAdapter(rates!!, listener = { swapCountry(it, 0) })
         countryList.apply {
             layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
             adapter = countryListAdapter
         }
+    }
+
+    private fun swapCountry(clickedPos: Int, toPos: Int) {
+        countryListAdapter.moveItem(clickedPos, toPos)
+        countryList.scrollToPosition(0)
     }
 }

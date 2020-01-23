@@ -12,7 +12,7 @@ import com.revolut.androidtest.domain.Country
 import com.revolut.androidtest.domain.Rates
 import com.revolut.androidtest.view.extensions.loadImage
 
-class CountryListAdapter(private val rates: Rates) :
+class CountryListAdapter(private val rates: Rates, private val listener: (Int) -> Unit) :
     RecyclerView.Adapter<CountryListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,6 +30,22 @@ class CountryListAdapter(private val rates: Rates) :
         holder.tvCountryFullCurrency.text = CountryInfo.valueOf(country.countryName).countryFullName
         holder.etRate.setText(country.rate.toString())
         holder.imgCountryFlag.loadImage(CountryInfo.valueOf(country.countryName).countryIcon)
+        holder.itemView.setOnClickListener {
+            country.let { listener.invoke(position) }
+        }
+    }
+
+    fun moveItem(clickedPos: Int, toPosition: Int) {
+        if (clickedPos == toPosition) return
+
+        val movingItem: Country = this.rates.countryList.removeAt(clickedPos)
+        if (clickedPos < toPosition) {
+            this.rates.countryList.add(toPosition - 1, movingItem)
+        } else {
+            this.rates.countryList.add(toPosition, movingItem)
+        }
+
+        notifyItemMoved(clickedPos, toPosition)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
