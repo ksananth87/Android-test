@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.revolut.androidtest.CountryRatesModule
 import com.revolut.androidtest.R
 import com.revolut.androidtest.api.APIClient
+import com.revolut.androidtest.domain.Rates
 import com.revolut.androidtest.view.viewmodel.CountryRatesViewModel
 import kotlinx.android.synthetic.main.fragment_country_rates.*
 
@@ -20,9 +21,7 @@ class CountryRatesFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         viewModel = CountryRatesModule.create(APIClient().getClient()).getViewModelFor(this, CountryRatesViewModel::class.java)
-        viewModel.showProgressDialog().observe(this, Observer {
-            updateSwipeRefresh(it)
-        })
+        setupObservers()
     }
 
     override fun onCreateView(
@@ -37,11 +36,24 @@ class CountryRatesFragment : Fragment() {
         return view
     }
 
+    private fun setupObservers() {
+        viewModel.showProgressDialog().observe(this, Observer {
+            updateSwipeRefresh(it)
+        })
+        viewModel.getRates().observe(this, Observer {
+            updateCountryList(it)
+        })
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
     }
 
     private fun updateSwipeRefresh(progressStatus: Boolean) {
         swipeRefreshLayout.isRefreshing = progressStatus
+    }
+
+    private fun updateCountryList(rates: Rates?) {
+
     }
 }
