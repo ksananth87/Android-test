@@ -127,9 +127,6 @@ class CountryRatesViewModelTest {
         viewModel.currencyClicked(1)
 
         //Assert
-        Assert.assertEquals("INR", viewModel.getRates().value?.currencyList?.get(0)?.code)
-        Assert.assertEquals("EUR", viewModel.getRates().value?.currencyList?.get(1)?.code)
-        Assert.assertEquals("USA", viewModel.getRates().value?.currencyList?.get(2)?.code)
         Assert.assertEquals( 1, viewModel.moveCurrencyToTop().value)
     }
 

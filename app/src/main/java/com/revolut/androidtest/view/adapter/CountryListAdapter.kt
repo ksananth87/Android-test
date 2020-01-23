@@ -14,7 +14,6 @@ import com.revolut.androidtest.view.extensions.loadImage
 class CountryListAdapter(private val listener: (Int) -> Unit) :
     RecyclerView.Adapter<CountryListAdapter.ViewHolder>() {
     private var rates: MutableList<Currency> = mutableListOf()
-    private var base = String()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_country_list, parent, false)

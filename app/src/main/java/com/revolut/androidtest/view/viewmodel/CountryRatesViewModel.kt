@@ -55,7 +55,6 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
             ZERO
         )
         rates.currencyList = currencyList
-        rateListLiveData.value = rates
     }
 
     private fun fetchRates() {
