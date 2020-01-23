@@ -1,16 +1,20 @@
 package com.revolut.androidtest.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.revolut.androidtest.CountryRatesModule
 import com.revolut.androidtest.R
 import com.revolut.androidtest.api.APIClient
 import com.revolut.androidtest.domain.Rates
+import com.revolut.androidtest.view.adapter.CountryListAdapter
 import com.revolut.androidtest.view.viewmodel.CountryRatesViewModel
 import kotlinx.android.synthetic.main.fragment_country_rates.*
 
@@ -45,15 +49,16 @@ class CountryRatesFragment : Fragment() {
         })
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     private fun updateSwipeRefresh(progressStatus: Boolean) {
         swipeRefreshLayout.isRefreshing = progressStatus
     }
 
+    @SuppressLint("WrongConstant")
     private fun updateCountryList(rates: Rates?) {
-
+        val countryListAdapter = CountryListAdapter(rates!!)
+        countryList.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+            adapter = countryListAdapter
+        }
     }
 }
