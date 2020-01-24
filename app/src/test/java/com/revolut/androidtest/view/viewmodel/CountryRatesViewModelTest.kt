@@ -131,6 +131,21 @@ class CountryRatesViewModelTest {
     }
 
     @Test
+    fun `should update all amount when an amount is changed`() {
+        //Arrange
+        viewModel.fragmentLoaded()
+
+        //Act
+        viewModel.currencyChanged(1, "INR", "100")
+
+        //Assert
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.size, 3)
+        Assert.assertEquals(200.0f, viewModel.getRates().value?.currencyList?.get(0)?.rate)
+        Assert.assertEquals(100.0f, viewModel.getRates().value?.currencyList?.get(1)?.rate)
+        Assert.assertEquals(100.0f, viewModel.getRates().value?.currencyList?.get(2)?.rate)
+    }
+
+    @Test
     fun `should call rates every 1 second`() {
         val testScheduler = TestScheduler()
         RxJavaPlugins.setComputationSchedulerHandler { testScheduler }
@@ -143,9 +158,9 @@ class CountryRatesViewModelTest {
 
     private fun aDummyRates(base: String): Rates {
         val countryRates = ArrayList<Currency>()
-        countryRates.add(Currency("INR", 85.33f))
+        countryRates.add(Currency("INR", 2f))
         countryRates.add(Currency("USA", 1f))
-        countryRates.add(Currency("EUR", 1.0f))
+        countryRates.add(Currency("EUR", 2f))
         return Rates(countryRates, base, "2020-11-01")
     }
 }

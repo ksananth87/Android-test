@@ -14,6 +14,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 
 class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewModel() {
@@ -22,7 +23,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private var disposable: Disposable? = null
 
     private var progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    private var rateListLiveData: MutableLiveData<CurrencyList> = MutableLiveData()
+    private var currencyListLiveData: MutableLiveData<CurrencyList> = MutableLiveData()
     private var errorLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var moveCurrencyIndexLiveData: MutableLiveData<Int> = MutableLiveData()
     private lateinit var rates: CurrencyList
@@ -59,7 +60,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
             ZERO
         )
         rates.currencyList = currencyList
-        rateListLiveData.postValue(rates)
+        currencyListLiveData.postValue(rates)
     }
 
     private fun fetchRates() {
@@ -90,7 +91,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     private fun handleResponse(rates: CurrencyList) {
         progressLiveData.value = false
-        rateListLiveData.value = rates
+        currencyListLiveData.value = rates
         this.rates = rates
     }
 
@@ -103,7 +104,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     fun showProgressDialog(): LiveData<Boolean> = progressLiveData
 
-    fun getRates(): LiveData<CurrencyList> = rateListLiveData
+    fun getRates(): LiveData<CurrencyList> = currencyListLiveData
 
     fun getError(): LiveData<Boolean> = errorLiveData
 
@@ -114,6 +115,30 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         compositeDisposable.clear()
         disposable?.dispose()
     }
+
+    fun currencyChanged(index: Int, code: String, enteredAmount: String) {
+        val updatedCurrencyList = ArrayList<Currency>()
+        for (currency: Currency in rates.currencyList) {
+            if (currency.code == code) {
+                updatedCurrencyList.add(
+                    Currency(
+                        currency.code,
+                        enteredAmount.toFloat()
+                    )
+                )
+            } else {
+                updatedCurrencyList.add(
+                    Currency(
+                        currency.code,
+                        enteredAmount.toFloat() * currency.rate
+                    )
+                )
+            }
+        }
+        rates.currencyList = updatedCurrencyList
+        currencyListLiveData.value = rates
+    }
+
 
     companion object{
         private const val ZERO = 0

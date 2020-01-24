@@ -1,5 +1,7 @@
 package com.revolut.androidtest.view.adapter
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +13,10 @@ import com.revolut.androidtest.R
 import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.view.extensions.loadImage
 
-class CountryListAdapter(private val listener: (Int) -> Unit) :
+class CountryListAdapter(
+    private val clickListener: (Int) -> Unit,
+    private val textChangeListener: (Int, String, String) -> Unit
+) :
     RecyclerView.Adapter<CountryListAdapter.ViewHolder>() {
     private var rates: MutableList<Currency> = mutableListOf()
 
@@ -31,8 +36,20 @@ class CountryListAdapter(private val listener: (Int) -> Unit) :
         holder.etRate.setText(country.rate.toString())
         holder.imgCountryFlag.loadImage(CountryInfo.valueOf(country.code).countryIcon)
         holder.itemView.setOnClickListener {
-            country.let { listener.invoke(position) }
+            country.let { clickListener.invoke(position) }
         }
+        holder.etRate.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                country.let { textChangeListener.invoke(position, country.code, text.toString()) }
+            }
+
+        })
     }
 
     fun setItems(newItems: List<Currency>) {

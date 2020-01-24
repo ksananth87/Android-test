@@ -19,9 +19,10 @@ import kotlinx.android.synthetic.main.fragment_country_rates.*
 class CountryRatesFragment : Fragment() {
 
     private lateinit var viewModel: CountryRatesViewModel
-    private val countryListAdapter = CountryListAdapter {
-        viewModel.currencyClicked(it)
-    }
+    private val countryListAdapter = CountryListAdapter(
+        { position -> viewModel.currencyClicked(position) },
+        { position,currency,enteredAmount -> viewModel.currencyChanged(position, currency, enteredAmount) }
+    )
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
