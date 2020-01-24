@@ -39,14 +39,14 @@ class CountryListAdapter(
             country.let { clickListener.invoke(position) }
         }
         holder.etRate.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+            override fun afterTextChanged(edittext: Editable?) {
+                country.let { textChangeListener.invoke(position, country.code, edittext.toString()) }
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                country.let { textChangeListener.invoke(position, country.code, text.toString()) }
             }
 
         })
