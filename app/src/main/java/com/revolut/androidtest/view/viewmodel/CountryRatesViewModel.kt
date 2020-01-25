@@ -24,6 +24,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     private var progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var currencyListLiveData: MutableLiveData<CurrencyList> = MutableLiveData()
+    private var refreshedCurrencyListLiveData: MutableLiveData<CurrencyList> = MutableLiveData()
     private var errorLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var moveCurrencyIndexLiveData: MutableLiveData<Int> = MutableLiveData()
     private lateinit var rates: CurrencyList
@@ -33,10 +34,10 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         fetchRates()
     }
 
-    fun refreshRatesEveryOneSec() {
-        disposable = Observable.interval(10, TimeUnit.SECONDS)
+    fun refreshRatesEveryOneSec(exitstingList: MutableList<Currency>) {
+        disposable = Observable.interval(4, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::callEndPoint) { this.handleBackgroundError(it) }
+            .subscribe({ this.callEndPoint(it, exitstingList) }) { this.handleBackgroundError(it) }
     }
 
     fun currencyClicked(clickedCurrencyIndex: Int) {
@@ -73,6 +74,31 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         )
     }
 
+    private fun refreshRates(existingList: MutableList<Currency>) {
+        compositeDisposable.add(
+            rateRepository.getRates()
+                .map { refreshList(it, existingList) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::handleRefreshRates, this::handleError)
+        )
+    }
+
+    private fun refreshList(
+        newRates: Rates,
+        existingList: MutableList<Currency>
+    ): CurrencyList {
+        val updatedCurrencyList = ArrayList<Currency>()
+        for (oldRates: Currency in existingList) {
+            for (newRates: Currency in newRates.countryList) {
+                if (oldRates.code == newRates.code) {
+                    updatedCurrencyList.add(Currency(newRates.code, newRates.rate))
+                }
+            }
+        }
+        return CurrencyList(updatedCurrencyList)
+    }
+
     private fun moveBaseCurrencyToFirst(rates: Rates): CurrencyList {
         val currencyList: ArrayList<Currency> = rates.countryList
         val baseCurrencyIndex: Int = currencyList.indexOfFirst { it.code == rates.base }
@@ -87,11 +113,19 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         return CurrencyList(currencyList)
     }
 
-    private fun callEndPoint(aLong: Long) = fetchRates()
+    private fun callEndPoint(
+        aLong: Long,
+        exitstingList: MutableList<Currency>
+    ) = refreshRates(exitstingList)
 
     private fun handleResponse(rates: CurrencyList) {
         progressLiveData.value = false
         currencyListLiveData.value = rates
+        this.rates = rates
+    }
+
+    private fun handleRefreshRates(rates: CurrencyList) {
+        refreshedCurrencyListLiveData.value = rates
         this.rates = rates
     }
 
@@ -105,6 +139,8 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     fun showProgressDialog(): LiveData<Boolean> = progressLiveData
 
     fun getRates(): LiveData<CurrencyList> = currencyListLiveData
+
+    fun getRefreshedRates(): LiveData<CurrencyList> = refreshedCurrencyListLiveData
 
     fun getError(): LiveData<Boolean> = errorLiveData
 

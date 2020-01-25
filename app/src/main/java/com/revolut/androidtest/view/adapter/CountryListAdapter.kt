@@ -73,6 +73,7 @@ class CountryListAdapter(
     fun updateList(newList: ArrayList<Currency>) {
         val diffResult = DiffUtil.calculateDiff(CurrencyDiffCallback(this.rates, newList))
         diffResult.dispatchUpdatesTo(this)
+        rates = newList
     }
 
     fun moveItem(fromPosition: Int, toPosition: Int) {

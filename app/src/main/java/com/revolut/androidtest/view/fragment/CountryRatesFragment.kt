@@ -64,6 +64,9 @@ class CountryRatesFragment : Fragment() {
         viewModel.getRates().observe(this, Observer {
             updateCountryList(it)
         })
+        viewModel.getRefreshedRates().observe(this, Observer {
+            updateRefreshedCurrencyList(it)
+        })
 
         viewModel.getError().observe(this, Observer {
             showErrorScreen(it)
@@ -87,7 +90,11 @@ class CountryRatesFragment : Fragment() {
         countryListAdapter.setItems(rates!!.currencyList)
         //countryListAdapter.submitList(rates!!.currencyList)
         //countryListAdapter.setBase(rates)
-        //viewModel.refreshRatesEveryOneSec()
+        viewModel.refreshRatesEveryOneSec(countryListAdapter.getItems())
+    }
+
+    private fun updateRefreshedCurrencyList(rates: CurrencyList){
+        countryListAdapter.updateList(rates.currencyList)
     }
 
     private fun swapCountry(clickedPos: Int) {

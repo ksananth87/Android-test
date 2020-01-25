@@ -150,7 +150,7 @@ class CountryRatesViewModelTest {
         val testScheduler = TestScheduler()
         RxJavaPlugins.setComputationSchedulerHandler { testScheduler }
 
-        viewModel.refreshRatesEveryOneSec()
+        viewModel.refreshRatesEveryOneSec(countryListAdapter.getItems())
 
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
         verify(service, times(2)).getRates()
