@@ -25,7 +25,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private lateinit var rates: CurrencyList
     private var enteredCode = ""
     private var enteredAmount: Float = 0f
-    private var enteredRate: Float = 0f
+    private var enteredRate: Float? = null
 
     fun fragmentLoaded() {
         showFetchingDialog()
@@ -89,13 +89,12 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         for (oldRates: Currency in existingRatesInScreen) {
             for (newRates: Currency in newRates.countryList) {
                 if (oldRates.code == newRates.code) {
-                    if(enteredCode.isEmpty()) {
-                        updatedCurrencyList.add(Currency(newRates.code, newRates.rate))
-                    } else{
-                        if(enteredCode == newRates.code) enteredRate = newRates.rate
-                        val updatedRates = Currency(newRates.code, CurrencyConverter(enteredAmount, enteredRate).convertTo(newRates.rate))
-                        updatedCurrencyList.add(updatedRates)
+                    if (enteredCode == newRates.code) {
+                        enteredRate = newRates.rate
                     }
+                    val updatedRates = Currency(newRates.code, CurrencyConverter(enteredAmount, enteredRate).convertTo(newRates.rate))
+                    updatedCurrencyList.add(updatedRates)
+
                 }
             }
         }
