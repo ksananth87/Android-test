@@ -7,7 +7,6 @@ import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.domain.model.Rates
 import com.revolut.androidtest.view.model.CurrencyList
-import com.revolut.androidtest.view.utils.CurrencyConverter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -42,18 +41,16 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         enteredAmount: Float,
         currentCurrencyList: MutableList<Currency>
     ) {
-        //Log.e("currencyValueUpdated", "currencyValueUpdated enteredCode--$enteredCode")
-        //Log.e("currencyValueUpdated", "currencyValueUpdated enteredAmount--$enteredAmount")
         this.enteredAmount = enteredAmount
         this.enteredCode = enteredCode
         this.enteredRate = enteredRate
-        val updatedCurrencyList = ArrayList<Currency>()
-        for (currency: Currency in currentCurrencyList) {
-            val updatedRates = Currency(currency.code, CurrencyConverter(enteredAmount, enteredRate).convertTo(currency.rate))
-            updatedCurrencyList.add(updatedRates)
-        }
-        refreshedCurrencyListLiveData.postValue(CurrencyList(updatedCurrencyList))
-        this.rates = CurrencyList(updatedCurrencyList)
+        val updatedList = CurrencyList(currentCurrencyList as ArrayList<Currency>)
+            .enteredAmount(enteredAmount)
+            .enteredCode(enteredCode)
+            .enteredRate(enteredRate)
+            .getUpdatedList()
+        refreshedCurrencyListLiveData.postValue(CurrencyList(updatedList.currencyList))
+        this.rates = updatedList
     }
 
 
@@ -85,30 +82,22 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         newRates: Rates,
         existingRatesInScreen: MutableList<Currency>
     ): CurrencyList {
-        val updatedCurrencyList = ArrayList<Currency>()
-        for (oldRates: Currency in existingRatesInScreen) {
-            for (newRates: Currency in newRates.countryList) {
-                if (oldRates.code == newRates.code) {
-                    if (enteredCode == newRates.code) {
-                        enteredRate = newRates.rate
-                    }
-                    val updatedRates = Currency(newRates.code, CurrencyConverter(enteredAmount, enteredRate).convertTo(newRates.rate))
-                    updatedCurrencyList.add(updatedRates)
 
-                }
-            }
-        }
-        return CurrencyList(updatedCurrencyList)
+        return CurrencyList(existingRatesInScreen as ArrayList<Currency>)
+            .enteredAmount(enteredAmount)
+            .enteredCode(enteredCode)
+            .enteredRate(enteredRate)
+            .refreshRatesWith(newRates)
     }
 
     private fun handleResponse(rates: CurrencyList) {
-        progressLiveData.value = false
-        currencyListLiveData.value = rates
+        dismissFetchingDialog()
+        showCurrencyRates(rates)
         this.rates = rates
     }
 
     private fun handleRefreshRates(rates: CurrencyList) {
-        refreshedCurrencyListLiveData.value = rates
+        refreshCurrencyRates(rates)
         this.rates = rates
     }
 
@@ -136,6 +125,14 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     private fun showErrorScreen() {
         errorLiveData.value = true
+    }
+
+    private fun showCurrencyRates(rates: CurrencyList) {
+        currencyListLiveData.value = rates
+    }
+
+    private fun refreshCurrencyRates(rates: CurrencyList) {
+        refreshedCurrencyListLiveData.value = rates
     }
 
     override fun onCleared() {

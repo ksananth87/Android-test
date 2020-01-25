@@ -45,10 +45,14 @@ class CountryRatesFragment : Fragment() {
         viewModel.fragmentLoaded()
 
         initiateAdapter()
-        initiateRecycleView()
-        setSwipeRefreshLayout()
 
         return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initiateRecycleView()
+        setSwipeRefreshLayout()
     }
 
     private fun initiateAdapter() {
