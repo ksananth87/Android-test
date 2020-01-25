@@ -14,9 +14,15 @@ import com.revolut.androidtest.api.APIClient
 import com.revolut.androidtest.view.adapter.CountryListAdapter
 import com.revolut.androidtest.view.model.CurrencyList
 import com.revolut.androidtest.view.viewmodel.CountryRatesViewModel
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_country_rates.*
+import java.util.concurrent.TimeUnit
 
 class CountryRatesFragment : Fragment() {
+
+    private var disposable: Disposable? = null
 
     private lateinit var viewModel: CountryRatesViewModel
     private val countryListAdapter = CountryListAdapter(
@@ -88,9 +94,14 @@ class CountryRatesFragment : Fragment() {
 
     private fun updateCountryList(rates: CurrencyList?) {
         countryListAdapter.setItems(rates!!.currencyList)
-        //countryListAdapter.submitList(rates!!.currencyList)
-        //countryListAdapter.setBase(rates)
-        viewModel.refreshRatesEveryOneSec(countryListAdapter.getItems())
+            disposable = Observable.interval(4, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ viewModel.callEndPoint(countryListAdapter.getItems()) }) { this.handleBackgroundError(it) }
+
+    }
+
+    private fun handleBackgroundError(it: Throwable?) {
+
     }
 
     private fun updateRefreshedCurrencyList(rates: CurrencyList){

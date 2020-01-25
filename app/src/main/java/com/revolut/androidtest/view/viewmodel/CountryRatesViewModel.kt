@@ -37,7 +37,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     fun refreshRatesEveryOneSec(exitstingList: MutableList<Currency>) {
         disposable = Observable.interval(4, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ this.callEndPoint(it, exitstingList) }) { this.handleBackgroundError(it) }
+            .subscribe({ this.callEndPoint(exitstingList) }) { this.handleBackgroundError(it) }
     }
 
     fun currencyClicked(clickedCurrencyIndex: Int) {
@@ -113,8 +113,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         return CurrencyList(currencyList)
     }
 
-    private fun callEndPoint(
-        aLong: Long,
+    fun callEndPoint(
         exitstingList: MutableList<Currency>
     ) = refreshRates(exitstingList)
 

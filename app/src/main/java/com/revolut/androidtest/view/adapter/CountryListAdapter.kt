@@ -9,12 +9,13 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.revolut.androidtest.R
 import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.view.extensions.loadImage
 import java.util.*
+
+
 
 class CountryListAdapter(
     private val clickListener: (Int) -> Unit,
@@ -39,6 +40,7 @@ class CountryListAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val country: Currency = rates[position]
+
         holder.tvCountryCurrency.text = country.code
         holder.tvCountryFullCurrency.text = CountryInfo.valueOf(country.code).countryFullName
         holder.etRate.setText(country.rate.toString())
@@ -71,8 +73,11 @@ class CountryListAdapter(
     }
 
     fun updateList(newList: ArrayList<Currency>) {
-        val diffResult = DiffUtil.calculateDiff(CurrencyDiffCallback(this.rates, newList))
-        diffResult.dispatchUpdatesTo(this)
+        //val diffResult = DiffUtil.calculateDiff(CurrencyDiffCallback(this.rates, newList))
+        //diffResult.dispatchUpdatesTo(this)
+        newList.forEachIndexed { index, element ->
+            notifyItemChanged(index, element)
+        }
         rates = newList
     }
 
@@ -80,13 +85,17 @@ class CountryListAdapter(
         if (fromPosition == toPosition) return
         val fromItem = rates[fromPosition]
         val toItem = rates[toPosition]
-        Collections.swap(
+      /*  Collections.swap(
             rates,
             fromPosition,
             toPosition
-        )
+        )*/
+
+        rates.removeAt(fromPosition)
+        rates.add(0, fromItem)
+
         notifyItemMoved(fromPosition, toPosition)
-        notifyItemRangeChanged(1, rates.size)
+        //notifyItemRangeChanged(1, rates.size)
         //notifyItemChanged(fromPosition, toItem)
         //notifyItemChanged(toPosition, toItem)
         Log.e("", "")
