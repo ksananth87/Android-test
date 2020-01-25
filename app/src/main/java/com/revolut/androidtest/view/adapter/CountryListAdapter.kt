@@ -59,7 +59,6 @@ class CountryListAdapter(
                         edittext.toString().toFloat()
                     country.let { textChangeListener.invoke(country.code, editedAmount) }
                 }
-                //mDiffer.currentList[position].rate = edittext.toString().toFloat()
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -90,7 +89,6 @@ class CountryListAdapter(
         val fromItem = rates[fromPosition]
         rates.removeAt(fromPosition)
         rates.add(0, fromItem)
-
         notifyItemMoved(fromPosition, toPosition)
     }
 
