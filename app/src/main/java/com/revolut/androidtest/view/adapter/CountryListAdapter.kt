@@ -18,7 +18,7 @@ import java.util.*
 
 
 class CountryListAdapter(
-    private val textChangeListener: (Int, String, Float) -> Unit
+    private val textChangeListener: (String, Float) -> Unit
 ) :
     RecyclerView.Adapter<CountryListAdapter.ViewHolder>() {
     private var rates: MutableList<Currency> = mutableListOf()
@@ -60,7 +60,7 @@ class CountryListAdapter(
                     editedAmount = if (edittext.toString().isEmpty()) 0f
                     else
                         edittext.toString().toFloat()
-                    country.let { textChangeListener.invoke(position, country.code, editedAmount) }
+                    country.let { textChangeListener.invoke(country.code, editedAmount) }
                 }
                 //mDiffer.currentList[position].rate = edittext.toString().toFloat()
             }

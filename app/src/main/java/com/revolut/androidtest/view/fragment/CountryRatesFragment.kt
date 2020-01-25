@@ -43,7 +43,7 @@ class CountryRatesFragment : Fragment() {
 
         viewModel.fragmentLoaded()
 
-        countryListAdapter = CountryListAdapter { position, currency, enteredAmount -> viewModel.currencyValueUpdated(
+        countryListAdapter = CountryListAdapter {currency, enteredAmount -> viewModel.currencyValueUpdated(
             currency,
             enteredAmount,
             countryListAdapter.getItems()
