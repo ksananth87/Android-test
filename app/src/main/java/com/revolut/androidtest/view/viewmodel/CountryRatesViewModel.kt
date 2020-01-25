@@ -20,7 +20,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private var currencyListLiveData: MutableLiveData<CurrencyList> = MutableLiveData()
     private var refreshedCurrencyListLiveData: MutableLiveData<CurrencyList> = MutableLiveData()
     private var errorLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    private var moveCurrencyIndexLiveData: MutableLiveData<Int> = MutableLiveData()
+
     private lateinit var rates: CurrencyList
     private var enteredCode = ""
     private var enteredAmount: Float = 0f
@@ -29,6 +29,42 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         showFetchingDialog()
         fetchRates()
     }
+
+    fun refreshCurrencyRates(
+        existingList: MutableList<Currency>
+    ) = FetchreRates(existingList)
+
+    fun currencyValueUpdated(
+        enteredCode: String,
+        enteredAmount: Float,
+        items: MutableList<Currency>
+    ) {
+        //Log.e("currencyValueUpdated", "currencyValueUpdated enteredCode--$enteredCode")
+        //Log.e("currencyValueUpdated", "currencyValueUpdated enteredAmount--$enteredAmount")
+        this.enteredAmount = enteredAmount
+        this.enteredCode = enteredCode
+        val updatedCurrencyList = ArrayList<Currency>()
+        for (currency: Currency in items) {
+            if (currency.code == enteredCode) {
+                updatedCurrencyList.add(
+                    Currency(
+                        currency.code,
+                        enteredAmount
+                    )
+                )
+            } else {
+                updatedCurrencyList.add(
+                    Currency(
+                        currency.code,
+                        enteredAmount * currency.rate
+                    )
+                )
+            }
+        }
+        refreshedCurrencyListLiveData.postValue(CurrencyList(updatedCurrencyList))
+        this.rates = CurrencyList(updatedCurrencyList)
+    }
+
 
     private fun fetchRates() {
         compositeDisposable.add(
@@ -40,7 +76,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         )
     }
 
-    private fun refreshRates(existingList: MutableList<Currency>) {
+    private fun FetchreRates(existingList: MutableList<Currency>) {
         compositeDisposable.add(
             rateRepository.getRates()
                 .map { refreshList(it, existingList) }
@@ -48,6 +84,10 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::handleRefreshRates, this::handleError)
         )
+    }
+
+    private fun getCurrencyRates(rates: Rates): CurrencyList {
+        return CurrencyList(rates.countryList)
     }
 
     private fun refreshList(
@@ -83,14 +123,6 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         return CurrencyList(updatedCurrencyList)
     }
 
-    private fun getCurrencyRates(rates: Rates): CurrencyList {
-        return CurrencyList(rates.countryList)
-    }
-
-    fun callEndPoint(
-        exitstingList: MutableList<Currency>
-    ) = refreshRates(exitstingList)
-
     private fun handleResponse(rates: CurrencyList) {
         progressLiveData.value = false
         currencyListLiveData.value = rates
@@ -115,43 +147,6 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     fun getError(): LiveData<Boolean> = errorLiveData
 
-    fun moveCurrencyToTop(): LiveData<Int> = moveCurrencyIndexLiveData
-
-    override fun onCleared() {
-        super.onCleared()
-        compositeDisposable.clear()
-    }
-
-    fun currencyChanged(
-        enteredCode: String,
-        enteredAmount: Float,
-        items: MutableList<Currency>
-    ) {
-        //Log.e("currencyChanged", "currencyChanged enteredCode--$enteredCode")
-        //Log.e("currencyChanged", "currencyChanged enteredAmount--$enteredAmount")
-        this.enteredAmount = enteredAmount
-        this.enteredCode = enteredCode
-        val updatedCurrencyList = ArrayList<Currency>()
-        for (currency: Currency in items) {
-            if (currency.code == enteredCode) {
-                updatedCurrencyList.add(
-                    Currency(
-                        currency.code,
-                        enteredAmount
-                    )
-                )
-            } else {
-                updatedCurrencyList.add(
-                    Currency(
-                        currency.code,
-                        enteredAmount * currency.rate
-                    )
-                )
-            }
-        }
-        refreshedCurrencyListLiveData.postValue(CurrencyList(updatedCurrencyList))
-        this.rates = CurrencyList(updatedCurrencyList)
-    }
 
     private fun showFetchingDialog() {
         progressLiveData.value = true
@@ -165,7 +160,8 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         errorLiveData.value = true
     }
 
-    companion object{
-        private const val ZERO = 0
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
     }
 }

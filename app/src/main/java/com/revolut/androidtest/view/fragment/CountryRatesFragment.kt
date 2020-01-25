@@ -43,7 +43,7 @@ class CountryRatesFragment : Fragment() {
 
         viewModel.fragmentLoaded()
 
-        countryListAdapter = CountryListAdapter { position, currency, enteredAmount -> viewModel.currencyChanged(
+        countryListAdapter = CountryListAdapter { position, currency, enteredAmount -> viewModel.currencyValueUpdated(
             currency,
             enteredAmount,
             countryListAdapter.getItems()
@@ -81,9 +81,6 @@ class CountryRatesFragment : Fragment() {
             showErrorScreen(it)
         })
 
-        viewModel.moveCurrencyToTop().observe(this, Observer {
-            swapCountry(it)
-        })
     }
 
     private fun showErrorScreen(it: Boolean?) {
@@ -99,22 +96,16 @@ class CountryRatesFragment : Fragment() {
         countryListAdapter.setItems(rates!!.currencyList)
             disposable = Observable.interval(4, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ viewModel.callEndPoint(countryListAdapter.getItems()) }) { this.handleBackgroundError(it) }
+                .subscribe({ viewModel.refreshCurrencyRates(countryListAdapter.getItems()) }) { this.handleRefreshError(it) }
 
     }
 
-    private fun handleBackgroundError(it: Throwable?) {
-
+    private fun handleRefreshError(it: Throwable?) {
+        //Do nothing, as we are calling in background
     }
 
     private fun updateRefreshedCurrencyList(rates: CurrencyList){
         countryListAdapter.updateList(rates.currencyList)
-    }
-
-    private fun swapCountry(clickedPos: Int) {
-        countryListAdapter.moveItem(clickedPos, 0)
-        countryList.scrollToPosition(0)
-        //countryListAdapter.updateItems(viewModel.getCachedRates())
     }
 
     override fun onResume() {

@@ -120,7 +120,7 @@ class CountryRatesViewModelTest {
         viewModel.fragmentLoaded()
 
         //Act
-        viewModel.currencyChanged("INR", 100f, mutableListOf())
+        viewModel.currencyValueUpdated("INR", 100f, mutableListOf())
 
         //Assert
         Assert.assertEquals(viewModel.getRates().value?.currencyList?.size, 3)
