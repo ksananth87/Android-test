@@ -105,7 +105,7 @@ class CountryRatesViewModelTest {
     }
 
     @Test
-    fun `should update all currencies with equivalent conversion rate when an rate is changed`() {
+    fun `should update all currencies with equivalent conversion rate when when rate is changed`() {
         //Act
         viewModel.currencyValueUpdated("INR", 78.64f, 100f, aDummyRates("EUR").countryList)
 
@@ -122,11 +122,23 @@ class CountryRatesViewModelTest {
 
         viewModel.refreshCurrencyRates(aDummyRates("EUR").countryList)
 
-        //Assert
         Assert.assertEquals(viewModel.getRefreshedRates().value?.currencyList?.size, 3)
         Assert.assertEquals(78f, viewModel.getRefreshedRates().value?.currencyList?.get(0)?.rate)
         Assert.assertEquals(1.15f, viewModel.getRefreshedRates().value?.currencyList?.get(1)?.rate)
         Assert.assertEquals(1.2f, viewModel.getRefreshedRates().value?.currencyList?.get(2)?.rate)
+    }
+
+    @Test
+    fun `should refresh currency rates after a currency rate updated`() {
+        `when`(service.getRates()).thenReturn(Single.just(aDummyRefreshedRates(base = "EUR")))
+        viewModel.currencyValueUpdated("INR", 78.64f, 100f, aDummyRates("EUR").countryList)
+
+        viewModel.refreshCurrencyRates(aDummyRates("EUR").countryList)
+
+        Assert.assertEquals(viewModel.getRefreshedRates().value?.currencyList?.size, 3)
+        Assert.assertEquals(100f, viewModel.getRefreshedRates().value?.currencyList?.get(0)?.rate)
+        Assert.assertEquals(1.47f, viewModel.getRefreshedRates().value?.currencyList?.get(1)?.rate)
+        Assert.assertEquals(1.54f, viewModel.getRefreshedRates().value?.currencyList?.get(2)?.rate)
     }
 
     private fun aDummyRates(base: String): Rates {

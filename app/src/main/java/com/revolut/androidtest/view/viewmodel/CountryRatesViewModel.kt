@@ -83,30 +83,18 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     private fun refreshList(
         newRates: Rates,
-        existingList: MutableList<Currency>
+        existingRatesInScreen: MutableList<Currency>
     ): CurrencyList {
         val updatedCurrencyList = ArrayList<Currency>()
-        for (oldRates: Currency in existingList) {
+        for (oldRates: Currency in existingRatesInScreen) {
             for (newRates: Currency in newRates.countryList) {
                 if (oldRates.code == newRates.code) {
                     if(enteredCode.isEmpty()) {
                         updatedCurrencyList.add(Currency(newRates.code, newRates.rate))
                     } else{
-                        if (oldRates.code == enteredCode) {
-                            updatedCurrencyList.add(
-                                Currency(
-                                    newRates.code,
-                                    enteredAmount
-                                )
-                            )
-                        } else {
-                            updatedCurrencyList.add(
-                                Currency(
-                                    newRates.code,
-                                    enteredAmount * newRates.rate
-                                )
-                            )
-                        }
+                        if(enteredCode == newRates.code) enteredRate = newRates.rate
+                        val updatedRates = Currency(newRates.code, CurrencyConverter(enteredAmount, enteredRate).convertTo(newRates.rate))
+                        updatedCurrencyList.add(updatedRates)
                     }
                 }
             }
