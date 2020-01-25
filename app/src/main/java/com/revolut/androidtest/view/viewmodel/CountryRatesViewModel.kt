@@ -10,8 +10,6 @@ import com.revolut.androidtest.view.model.CurrencyList
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewModel() {
@@ -32,30 +30,10 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         fetchRates()
     }
 
-    fun currencyClicked(clickedCurrencyIndex: Int) {
-        moveClickedCurrencyToTop(clickedCurrencyIndex)
-        swapCurrency(clickedCurrencyIndex)
-    }
-
-    private fun moveClickedCurrencyToTop(clickedCurrencyIndex: Int) {
-        moveCurrencyIndexLiveData.value = clickedCurrencyIndex
-    }
-
-    private fun swapCurrency(clickedIndex: Int) {
-        val currencyList: ArrayList<Currency> = rates.currencyList
-        Collections.swap(
-            currencyList,
-            clickedIndex,
-            ZERO
-        )
-        rates.currencyList = currencyList
-        //currencyListLiveData.postValue(rates)
-    }
-
     private fun fetchRates() {
         compositeDisposable.add(
             rateRepository.getRates()
-                .map { moveBaseCurrencyToFirst(it) }
+                .map { getCurrencyRates(it) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::handleResponse, this::handleError)
@@ -105,18 +83,8 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         return CurrencyList(updatedCurrencyList)
     }
 
-    private fun moveBaseCurrencyToFirst(rates: Rates): CurrencyList {
-        val currencyList: ArrayList<Currency> = rates.countryList
-        val baseCurrencyIndex: Int = currencyList.indexOfFirst { it.code == rates.base }
-        if(baseCurrencyIndex != -1) {
-            val baseCurrency: Currency = currencyList[baseCurrencyIndex]
-            val sortedList: ArrayList<Currency> = currencyList.apply {
-                removeAt(baseCurrencyIndex)
-                add(ZERO, baseCurrency)
-            }
-            return CurrencyList(sortedList)
-        }
-        return CurrencyList(currencyList)
+    private fun getCurrencyRates(rates: Rates): CurrencyList {
+        return CurrencyList(rates.countryList)
     }
 
     fun callEndPoint(

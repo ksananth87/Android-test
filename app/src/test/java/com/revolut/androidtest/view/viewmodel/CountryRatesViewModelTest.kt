@@ -97,9 +97,9 @@ class CountryRatesViewModelTest {
         viewModel.fragmentLoaded()
 
         Assert.assertEquals(viewModel.getRates().value?.currencyList?.size, 3)
-        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(0)?.code, "EUR")
-        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(1)?.code, "INR")
-        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(2)?.code, "USA")
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(0)?.code, "INR")
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(1)?.code, "USA")
+        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(2)?.code, "EUR")
     }
 
     @Test
@@ -115,18 +115,6 @@ class CountryRatesViewModelTest {
     }
 
     @Test
-    fun `should move clicked item to first in the currency rate list`() {
-        //Arrange
-        viewModel.fragmentLoaded()
-
-        //Act
-        viewModel.currencyClicked(1)
-
-        //Assert
-        Assert.assertEquals( 1, viewModel.moveCurrencyToTop().value)
-    }
-
-    @Test
     fun `should update all amount when an amount is changed`() {
         //Arrange
         viewModel.fragmentLoaded()
@@ -137,8 +125,8 @@ class CountryRatesViewModelTest {
         //Assert
         Assert.assertEquals(viewModel.getRates().value?.currencyList?.size, 3)
         Assert.assertEquals(2.0f, viewModel.getRates().value?.currencyList?.get(0)?.rate)
-        Assert.assertEquals(2.0f, viewModel.getRates().value?.currencyList?.get(1)?.rate)
-        Assert.assertEquals(1.0f, viewModel.getRates().value?.currencyList?.get(2)?.rate)
+        Assert.assertEquals(1.0f, viewModel.getRates().value?.currencyList?.get(1)?.rate)
+        Assert.assertEquals(2.0f, viewModel.getRates().value?.currencyList?.get(2)?.rate)
     }
 
     private fun aDummyRates(base: String): Rates {
