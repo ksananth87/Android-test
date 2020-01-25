@@ -26,7 +26,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private var enteredAmount: Float = 0f
 
     fun fragmentLoaded() {
-        progressLiveData.value = true
+        showFetchingDialog()
         fetchRates()
     }
 
@@ -103,8 +103,8 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     }
 
     private fun handleError(throwable: Throwable) {
-        progressLiveData.value = false
-        errorLiveData.value = true
+        dismissFetchingDialog()
+        showErrorScreen()
     }
 
     fun showProgressDialog(): LiveData<Boolean> = progressLiveData
@@ -149,13 +149,21 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
                 )
             }
         }
-        //rates.currencyList = updatedCurrencyList
-        //currencyListLiveData.value = rates
-
         refreshedCurrencyListLiveData.postValue(CurrencyList(updatedCurrencyList))
         this.rates = CurrencyList(updatedCurrencyList)
     }
 
+    private fun showFetchingDialog() {
+        progressLiveData.value = true
+    }
+
+    private fun dismissFetchingDialog() {
+        progressLiveData.value = false
+    }
+
+    private fun showErrorScreen() {
+        errorLiveData.value = true
+    }
 
     companion object{
         private const val ZERO = 0
