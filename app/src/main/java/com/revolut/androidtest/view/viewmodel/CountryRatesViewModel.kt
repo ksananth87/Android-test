@@ -14,7 +14,7 @@ import io.reactivex.schedulers.Schedulers
 
 class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewModel() {
 
-    private val compositeDisposable = CompositeDisposable()
+    val compositeDisposable = CompositeDisposable()
 
     private var progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var currencyListLiveData: MutableLiveData<CurrencyList> = MutableLiveData()
@@ -135,7 +135,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         refreshedCurrencyListLiveData.value = rates
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         super.onCleared()
         compositeDisposable.clear()
     }

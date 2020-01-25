@@ -8,6 +8,7 @@ import com.revolut.androidtest.api.exception.InvalidResponseException
 import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.domain.model.Rates
+import io.reactivex.Observable
 import io.reactivex.Single
 import org.junit.Assert
 import org.junit.Before
@@ -140,6 +141,18 @@ class CountryRatesViewModelTest {
         Assert.assertEquals(1.47f, viewModel.getRefreshedRates().value?.currencyList?.get(1)?.rate)
         Assert.assertEquals(1.54f, viewModel.getRefreshedRates().value?.currencyList?.get(2)?.rate)
     }
+
+    @Test
+    fun `should clear all service when viewModel cleared`() {
+        viewModel.compositeDisposable.add(Observable.just("").subscribe())
+        viewModel.compositeDisposable.add(Observable.just("").subscribe())
+        Assert.assertEquals(2, viewModel.compositeDisposable.size())
+
+        viewModel.onCleared()
+
+        Assert.assertEquals(0, viewModel.compositeDisposable.size())
+    }
+
 
     private fun aDummyRates(base: String): Rates {
         val countryRates = ArrayList<Currency>()
