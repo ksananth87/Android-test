@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.revolut.androidtest.R
@@ -25,27 +24,6 @@ class CountryListAdapter(
     private var rates: MutableList<Currency> = mutableListOf()
     private lateinit var mRecyclerView: RecyclerView
 
-    private val diffCallback = object : DiffUtil.ItemCallback<Currency>() {
-        override fun areItemsTheSame(oldItem: Currency, newItem: Currency): Boolean {
-            return oldItem.rate == newItem.rate
-        }
-
-        override fun areContentsTheSame(oldItem: Currency, newItem: Currency): Boolean {
-            return oldItem.rate == newItem.rate
-        }
-    }
-    private val mDiffer = AsyncListDiffer(this, this.diffCallback)
-
-    fun submitList(list: List<Currency>) {
-        //mDiffer.submitList(list)
-        val diffResult = DiffUtil.calculateDiff(
-            CurrencyDiffCallback(
-                this.rates,
-                list
-            )
-        )
-        diffResult.dispatchUpdatesTo(this)
-    }
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         mRecyclerView = recyclerView
@@ -114,7 +92,7 @@ class CountryListAdapter(
     }
 
     fun getItems(): MutableList<Currency> {
-        return mDiffer.currentList
+        return rates
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
