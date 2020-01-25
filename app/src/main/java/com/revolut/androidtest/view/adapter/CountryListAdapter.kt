@@ -2,18 +2,20 @@ package com.revolut.androidtest.view.adapter
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.revolut.androidtest.R
 import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.view.extensions.loadImage
 import java.util.*
-
 
 class CountryListAdapter(
     private val clickListener: (Int) -> Unit,
@@ -23,7 +25,27 @@ class CountryListAdapter(
     private var rates: MutableList<Currency> = mutableListOf()
     private lateinit var mRecyclerView: RecyclerView
 
+    private val diffCallback = object : DiffUtil.ItemCallback<Currency>() {
+        override fun areItemsTheSame(oldItem: Currency, newItem: Currency): Boolean {
+            return oldItem.rate == newItem.rate
+        }
 
+        override fun areContentsTheSame(oldItem: Currency, newItem: Currency): Boolean {
+            return oldItem.rate == newItem.rate
+        }
+    }
+    private val mDiffer = AsyncListDiffer(this, this.diffCallback)
+
+    fun submitList(list: List<Currency>) {
+        //mDiffer.submitList(list)
+        val diffResult = DiffUtil.calculateDiff(
+            CurrencyDiffCallback(
+                this.rates,
+                list
+            )
+        )
+        diffResult.dispatchUpdatesTo(this)
+    }
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         mRecyclerView = recyclerView
@@ -51,6 +73,7 @@ class CountryListAdapter(
         }
         holder.etRate.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(edittext: Editable?) {
+                //mDiffer.currentList[position].rate = edittext.toString().toFloat()
                 //country.let { textChangeListener.invoke(position, country.code, edittext.toString()) }
             }
 
@@ -69,27 +92,29 @@ class CountryListAdapter(
         notifyDataSetChanged()
     }
 
-    fun updateItems(newItems: List<Currency>) {
-        rates.clear()
-        rates.addAll(newItems)
+    fun updateList(newList: ArrayList<Currency>) {
+        val diffResult = DiffUtil.calculateDiff(CurrencyDiffCallback(this.rates, newList))
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun moveItem(fromPosition: Int, toPosition: Int) {
         if (fromPosition == toPosition) return
+        val fromItem = rates[fromPosition]
+        val toItem = rates[toPosition]
         Collections.swap(
             rates,
             fromPosition,
             toPosition
         )
         notifyItemMoved(fromPosition, toPosition)
-        val fromItem = rates.get(fromPosition)
-        val toItem = rates.get(toPosition)
-        notifyItemChanged(fromPosition, toItem)
-        notifyItemChanged(toPosition, fromItem)
+        notifyItemRangeChanged(1, rates.size)
+        //notifyItemChanged(fromPosition, toItem)
+        //notifyItemChanged(toPosition, toItem)
+        Log.e("", "")
     }
 
     fun getItems(): MutableList<Currency> {
-        return rates
+        return mDiffer.currentList
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

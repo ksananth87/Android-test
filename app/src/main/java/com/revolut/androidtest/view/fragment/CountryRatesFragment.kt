@@ -85,6 +85,7 @@ class CountryRatesFragment : Fragment() {
 
     private fun updateCountryList(rates: CurrencyList?) {
         countryListAdapter.setItems(rates!!.currencyList)
+        //countryListAdapter.submitList(rates!!.currencyList)
         //countryListAdapter.setBase(rates)
         //viewModel.refreshRatesEveryOneSec()
     }

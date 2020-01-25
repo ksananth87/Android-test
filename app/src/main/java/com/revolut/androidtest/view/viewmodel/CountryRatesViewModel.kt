@@ -34,7 +34,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     }
 
     fun refreshRatesEveryOneSec() {
-        disposable = Observable.interval(1, TimeUnit.SECONDS)
+        disposable = Observable.interval(10, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::callEndPoint) { this.handleBackgroundError(it) }
     }
