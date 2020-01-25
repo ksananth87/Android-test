@@ -29,6 +29,7 @@ class CountryRatesFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+
         viewModel = CountryRatesModule.create(APIClient().getClient())
             .getViewModelFor(this, CountryRatesViewModel::class.java)
         setupObservers()
@@ -43,26 +44,34 @@ class CountryRatesFragment : Fragment() {
 
         viewModel.fragmentLoaded()
 
-        countryListAdapter = CountryListAdapter {currency, enteredAmount -> viewModel.currencyValueUpdated(
-            currency,
-            enteredAmount,
-            countryListAdapter.getItems()
-        ) }
+        initiateAdapter()
+        initiateRecycleView()
+        setSwipeRefreshLayout()
 
         return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        swipeRefreshLayout.setOnRefreshListener {
-            viewModel.fragmentLoaded()
+    private fun initiateAdapter() {
+        countryListAdapter = CountryListAdapter { currency, enteredAmount ->
+            viewModel.currencyValueUpdated(
+                currency,
+                enteredAmount,
+                countryListAdapter.getItems()
+            )
         }
+    }
 
+    private fun initiateRecycleView() {
         with(countryList) {
             setHasFixedSize(true)
             adapter = countryListAdapter
             layoutManager = LinearLayoutManager(context)
+        }
+    }
+
+    private fun setSwipeRefreshLayout() {
+        swipeRefreshLayout.setOnRefreshListener {
+            viewModel.fragmentLoaded()
         }
     }
 
@@ -74,13 +83,17 @@ class CountryRatesFragment : Fragment() {
             updateCountryList(it)
         })
         viewModel.getRefreshedRates().observe(this, Observer {
-            updateRefreshedCurrencyList(it)
+            refreshCurrencies(it)
         })
 
         viewModel.getError().observe(this, Observer {
             showErrorScreen(it)
         })
+    }
 
+    private fun updateCountryList(rates: CurrencyList?) {
+        showCurrencyList(rates)
+        startRefreshTimer()
     }
 
     private fun showErrorScreen(it: Boolean?) {
@@ -92,24 +105,29 @@ class CountryRatesFragment : Fragment() {
         swipeRefreshLayout.isRefreshing = progressStatus
     }
 
-    private fun updateCountryList(rates: CurrencyList?) {
-        countryListAdapter.setItems(rates!!.currencyList)
-            disposable = Observable.interval(4, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ viewModel.refreshCurrencyRates(countryListAdapter.getItems()) }) { this.handleRefreshError(it) }
+    private fun startRefreshTimer() {
+        disposable = Observable.interval(REFRESH_IN_SEC, TimeUnit.SECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ viewModel.refreshCurrencyRates(countryListAdapter.getItems()) }) {
+                this.handleRefreshError(
+                    it
+                )
+            }
+    }
 
+    private fun showCurrencyList(rates: CurrencyList?) {
+        countryListAdapter.setItems(rates!!.currencyList)
+    }
+
+    private fun refreshCurrencies(latestRates: CurrencyList) {
+        countryListAdapter.updateList(latestRates.currencyList)
     }
 
     private fun handleRefreshError(it: Throwable?) {
         //Do nothing, as we are calling in background
     }
 
-    private fun updateRefreshedCurrencyList(rates: CurrencyList){
-        countryListAdapter.updateList(rates.currencyList)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        countryListAdapter.getItems()
+    companion object {
+        const val REFRESH_IN_SEC = 4L
     }
 }
