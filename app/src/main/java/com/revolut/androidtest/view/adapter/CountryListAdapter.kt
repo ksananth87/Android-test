@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.revolut.androidtest.R
 import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.view.extensions.loadImage
+import java.util.*
+
 
 class CountryListAdapter(
     private val clickListener: (Int) -> Unit,
@@ -19,7 +21,13 @@ class CountryListAdapter(
 ) :
     RecyclerView.Adapter<CountryListAdapter.ViewHolder>() {
     private var rates: MutableList<Currency> = mutableListOf()
+    private lateinit var mRecyclerView: RecyclerView
 
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        mRecyclerView = recyclerView
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_country_list, parent, false)
         return ViewHolder(view)
@@ -36,11 +44,14 @@ class CountryListAdapter(
         holder.etRate.setText(country.rate.toString())
         holder.imgCountryFlag.loadImage(CountryInfo.valueOf(country.code).countryIcon)
         holder.itemView.setOnClickListener {
-            country.let { clickListener.invoke(position) }
+            country.let {
+                moveItem(position, 0)
+                mRecyclerView.scrollToPosition(0)
+            }
         }
         holder.etRate.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(edittext: Editable?) {
-                country.let { textChangeListener.invoke(position, country.code, edittext.toString()) }
+                //country.let { textChangeListener.invoke(position, country.code, edittext.toString()) }
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -63,9 +74,22 @@ class CountryListAdapter(
         rates.addAll(newItems)
     }
 
-    fun moveItem(clickedPos: Int, toPosition: Int) {
-        if (clickedPos == toPosition) return
-        notifyItemMoved(clickedPos, toPosition)
+    fun moveItem(fromPosition: Int, toPosition: Int) {
+        if (fromPosition == toPosition) return
+        Collections.swap(
+            rates,
+            fromPosition,
+            toPosition
+        )
+        notifyItemMoved(fromPosition, toPosition)
+        val fromItem = rates.get(fromPosition)
+        val toItem = rates.get(toPosition)
+        notifyItemChanged(fromPosition, toItem)
+        notifyItemChanged(toPosition, fromItem)
+    }
+
+    fun getItems(): MutableList<Currency> {
+        return rates
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
