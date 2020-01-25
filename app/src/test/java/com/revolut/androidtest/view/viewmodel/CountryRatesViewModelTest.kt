@@ -2,7 +2,6 @@ package com.revolut.androidtest.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.revolut.androidtest.RxTrampolineSchedulerRule
 import com.revolut.androidtest.api.exception.InvalidResponseException
@@ -10,8 +9,6 @@ import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.domain.model.Rates
 import io.reactivex.Single
-import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.TestScheduler
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -23,7 +20,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.inOrder
 import org.mockito.Spy
 import org.mockito.junit.MockitoJUnitRunner
-import java.util.concurrent.TimeUnit
 
 @RunWith(MockitoJUnitRunner::class)
 class CountryRatesViewModelTest {
@@ -143,17 +139,6 @@ class CountryRatesViewModelTest {
         Assert.assertEquals(200.0f, viewModel.getRates().value?.currencyList?.get(0)?.rate)
         Assert.assertEquals(100.0f, viewModel.getRates().value?.currencyList?.get(1)?.rate)
         Assert.assertEquals(100.0f, viewModel.getRates().value?.currencyList?.get(2)?.rate)
-    }
-
-    @Test
-    fun `should call rates every 1 second`() {
-        val testScheduler = TestScheduler()
-        RxJavaPlugins.setComputationSchedulerHandler { testScheduler }
-
-        viewModel.refreshRatesEveryOneSec(countryListAdapter.getItems())
-
-        testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
-        verify(service, times(2)).getRates()
     }
 
     private fun aDummyRates(base: String): Rates {
