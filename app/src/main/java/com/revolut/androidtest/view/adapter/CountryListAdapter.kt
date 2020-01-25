@@ -41,8 +41,9 @@ class CountryListAdapter(
 
         holder.tvCountryCurrency.text = country.code
         holder.tvCountryFullCurrency.text = CountryInfo.valueOf(country.code).countryFullName
-        if (editedCode == "" || editedCode != country.code)
+        if (editedCode == "" || editedCode != country.code) {
             holder.etRate.setText(country.rate.toString())
+        }
         holder.imgCountryFlag.loadImage(CountryInfo.valueOf(country.code).countryIcon)
         holder.itemView.setOnClickListener {
             country.let {
@@ -53,10 +54,8 @@ class CountryListAdapter(
         holder.etRate.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(edittext: Editable?) {
                 if (holder.etRate.isFocused) {
-                    editedCode = country.code
-                    editedAmount = if (edittext.toString().isEmpty()) 0f
-                    else
-                        edittext.toString().toFloat()
+                    updateEditedCode(country)
+                    updateEditedAmount(edittext)
                     country.let { textChangeListener.invoke(country.code, country.rate, editedAmount) }
                 }
             }
@@ -68,6 +67,16 @@ class CountryListAdapter(
             }
 
         })
+    }
+
+    private fun updateEditedAmount(edittext: Editable?) {
+        editedAmount = if (edittext.toString().isEmpty()) 0f
+        else
+            edittext.toString().toFloat()
+    }
+
+    private fun updateEditedCode(country: Currency) {
+        editedCode = country.code
     }
 
     fun setCurrencyList(newItems: List<Currency>) {
