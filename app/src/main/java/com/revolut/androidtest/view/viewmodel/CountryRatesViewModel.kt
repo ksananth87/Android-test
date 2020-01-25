@@ -7,20 +7,16 @@ import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.domain.model.Rates
 import com.revolut.androidtest.view.model.CurrencyList
-import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 
 class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewModel() {
 
     private val compositeDisposable = CompositeDisposable()
-    private var disposable: Disposable? = null
 
     private var progressLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var currencyListLiveData: MutableLiveData<CurrencyList> = MutableLiveData()
@@ -34,19 +30,9 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         fetchRates()
     }
 
-    fun refreshRatesEveryOneSec(exitstingList: MutableList<Currency>) {
-        disposable = Observable.interval(4, TimeUnit.SECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ this.callEndPoint(exitstingList) }) { this.handleBackgroundError(it) }
-    }
-
     fun currencyClicked(clickedCurrencyIndex: Int) {
         moveClickedCurrencyToTop(clickedCurrencyIndex)
         swapCurrency(clickedCurrencyIndex)
-    }
-
-    fun getCachedRates(): List<Currency> {
-        return rates.currencyList
     }
 
     private fun moveClickedCurrencyToTop(clickedCurrencyIndex: Int) {
@@ -148,7 +134,6 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.clear()
-        disposable?.dispose()
     }
 
     fun currencyChanged(index: Int, code: String, enteredAmount: String) {
