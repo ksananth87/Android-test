@@ -116,11 +116,11 @@ class CountryRatesFragment : Fragment() {
     }
 
     private fun showCurrencyList(rates: CurrencyList?) {
-        countryListAdapter.setItems(rates!!.currencyList)
+        countryListAdapter.setCurrencyList(rates!!.currencyList)
     }
 
     private fun refreshCurrencies(latestRates: CurrencyList) {
-        countryListAdapter.updateList(latestRates.currencyList)
+        countryListAdapter.updateCurrencyList(latestRates.currencyList)
     }
 
     private fun handleRefreshError(it: Throwable?) {

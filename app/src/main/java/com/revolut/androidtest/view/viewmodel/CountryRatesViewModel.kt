@@ -37,14 +37,14 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     fun currencyValueUpdated(
         enteredCode: String,
         enteredAmount: Float,
-        items: MutableList<Currency>
+        currentCurrencyList: MutableList<Currency>
     ) {
         //Log.e("currencyValueUpdated", "currencyValueUpdated enteredCode--$enteredCode")
         //Log.e("currencyValueUpdated", "currencyValueUpdated enteredAmount--$enteredAmount")
         this.enteredAmount = enteredAmount
         this.enteredCode = enteredCode
         val updatedCurrencyList = ArrayList<Currency>()
-        for (currency: Currency in items) {
+        for (currency: Currency in currentCurrencyList) {
             if (currency.code == enteredCode) {
                 updatedCurrencyList.add(
                     Currency(

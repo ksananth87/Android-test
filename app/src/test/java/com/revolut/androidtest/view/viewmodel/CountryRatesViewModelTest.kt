@@ -93,17 +93,7 @@ class CountryRatesViewModelTest {
     }
 
     @Test
-    fun `should move base currency to top of currency list`() {
-        viewModel.fragmentLoaded()
-
-        Assert.assertEquals(viewModel.getRates().value?.currencyList?.size, 3)
-        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(0)?.code, "INR")
-        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(1)?.code, "USA")
-        Assert.assertEquals(viewModel.getRates().value?.currencyList?.get(2)?.code, "EUR")
-    }
-
-    @Test
-    fun `should return as-is currency list when base currency is not in currency list`() {
+    fun `should return as-is currency list from repository`() {
         `when`(service.getRates()).thenReturn(Single.just(aDummyRates(base = "YEN")))
 
         viewModel.fragmentLoaded()
@@ -115,8 +105,9 @@ class CountryRatesViewModelTest {
     }
 
     @Test
-    fun `should update all amount when an amount is changed`() {
+    fun `should update all currencies with equivalent conversion rate when an rate is changed`() {
         //Arrange
+        `when`(service.getRates()).thenReturn(Single.just(aDummyRates(base = "EUR")))
         viewModel.fragmentLoaded()
 
         //Act
@@ -124,16 +115,16 @@ class CountryRatesViewModelTest {
 
         //Assert
         Assert.assertEquals(viewModel.getRates().value?.currencyList?.size, 3)
-        Assert.assertEquals(2.0f, viewModel.getRates().value?.currencyList?.get(0)?.rate)
-        Assert.assertEquals(1.0f, viewModel.getRates().value?.currencyList?.get(1)?.rate)
-        Assert.assertEquals(2.0f, viewModel.getRates().value?.currencyList?.get(2)?.rate)
+        Assert.assertEquals(100f, viewModel.getRates().value?.currencyList?.get(0)?.rate)
+        Assert.assertEquals(1.27f, viewModel.getRates().value?.currencyList?.get(1)?.rate)
+        Assert.assertEquals(1.40f, viewModel.getRates().value?.currencyList?.get(2)?.rate)
     }
 
     private fun aDummyRates(base: String): Rates {
         val countryRates = ArrayList<Currency>()
-        countryRates.add(Currency("INR", 2f))
-        countryRates.add(Currency("USA", 1f))
-        countryRates.add(Currency("EUR", 2f))
+        countryRates.add(Currency("INR", 78.64f))
+        countryRates.add(Currency("USA", 1.10f))
+        countryRates.add(Currency("EUR", 1f))
         return Rates(countryRates, base, "2020-11-01")
     }
 }

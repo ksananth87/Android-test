@@ -46,8 +46,8 @@ class CountryListAdapter(
         holder.imgCountryFlag.loadImage(CountryInfo.valueOf(country.code).countryIcon)
         holder.itemView.setOnClickListener {
             country.let {
-                moveItem(position, 0)
-                mRecyclerView.scrollToPosition(0)
+                moveTappedCurrencyToTop(position)
+                mRecyclerView.scrollToPosition(TOP_POSITION)
             }
         }
         holder.etRate.addTextChangedListener(object : TextWatcher {
@@ -70,26 +70,25 @@ class CountryListAdapter(
         })
     }
 
-    fun setItems(newItems: List<Currency>) {
+    fun setCurrencyList(newItems: List<Currency>) {
         rates.clear()
         rates.addAll(newItems)
         notifyDataSetChanged()
     }
 
-    fun updateList(newList: ArrayList<Currency>) {
-        //val diffResult = DiffUtil.calculateDiff(CurrencyDiffCallback(this.rates, newList))
+    fun updateCurrencyList(newList: ArrayList<Currency>) {
         newList.forEachIndexed { index, element ->
             notifyItemChanged(index, element)
         }
         rates = newList
     }
 
-    private fun moveItem(fromPosition: Int, toPosition: Int) {
-        if (fromPosition == toPosition) return
-        val fromItem = rates[fromPosition]
-        rates.removeAt(fromPosition)
-        rates.add(0, fromItem)
-        notifyItemMoved(fromPosition, toPosition)
+    private fun moveTappedCurrencyToTop(tappedPosition: Int) {
+        if (tappedPosition == TOP_POSITION) return
+        val tappedCurrency = rates[tappedPosition]
+        rates.removeAt(tappedPosition)
+        rates.add(TOP_POSITION, tappedCurrency)
+        notifyItemMoved(tappedPosition, TOP_POSITION)
     }
 
     fun getItems(): MutableList<Currency> {
@@ -101,5 +100,9 @@ class CountryListAdapter(
         val tvCountryCurrency: TextView = itemView.findViewById(R.id.countryCurrency)
         val tvCountryFullCurrency: TextView = itemView.findViewById(R.id.countryFullCurrency)
         val etRate: EditText = itemView.findViewById(R.id.rate)
+    }
+
+    companion object {
+        const val TOP_POSITION = 0
     }
 }
