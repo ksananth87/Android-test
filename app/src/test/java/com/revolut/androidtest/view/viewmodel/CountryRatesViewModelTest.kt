@@ -116,11 +116,32 @@ class CountryRatesViewModelTest {
         Assert.assertEquals(1.27f, viewModel.getRefreshedRates().value?.currencyList?.get(2)?.rate)
     }
 
+    @Test
+    fun `should refresh existing rate with new rates`() {
+        `when`(service.getRates()).thenReturn(Single.just(aDummyRefreshedRates(base = "EUR")))
+
+        viewModel.refreshCurrencyRates(aDummyRates("EUR").countryList)
+
+        //Assert
+        Assert.assertEquals(viewModel.getRefreshedRates().value?.currencyList?.size, 3)
+        Assert.assertEquals(78f, viewModel.getRefreshedRates().value?.currencyList?.get(0)?.rate)
+        Assert.assertEquals(1.15f, viewModel.getRefreshedRates().value?.currencyList?.get(1)?.rate)
+        Assert.assertEquals(1.2f, viewModel.getRefreshedRates().value?.currencyList?.get(2)?.rate)
+    }
+
     private fun aDummyRates(base: String): Rates {
         val countryRates = ArrayList<Currency>()
         countryRates.add(Currency("INR", 78.64f))
         countryRates.add(Currency("USA", 1.10f))
         countryRates.add(Currency("EUR", 1f))
+        return Rates(countryRates, base, "2020-11-01")
+    }
+
+    private fun aDummyRefreshedRates(base: String): Rates {
+        val countryRates = ArrayList<Currency>()
+        countryRates.add(Currency("INR", 78f))
+        countryRates.add(Currency("USA", 1.15f))
+        countryRates.add(Currency("EUR", 1.2f))
         return Rates(countryRates, base, "2020-11-01")
     }
 }

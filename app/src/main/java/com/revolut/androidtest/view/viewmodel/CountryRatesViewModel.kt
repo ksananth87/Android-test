@@ -34,7 +34,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     fun refreshCurrencyRates(
         existingList: MutableList<Currency>
-    ) = FetchRates(existingList)
+    ) = fetchRates(existingList)
 
     fun currencyValueUpdated(
         enteredCode: String,
@@ -51,7 +51,6 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         for (currency: Currency in currentCurrencyList) {
             val updatedRates = Currency(currency.code, CurrencyConverter(enteredAmount, enteredRate).convertTo(currency.rate))
             updatedCurrencyList.add(updatedRates)
-
         }
         refreshedCurrencyListLiveData.postValue(CurrencyList(updatedCurrencyList))
         this.rates = CurrencyList(updatedCurrencyList)
@@ -68,7 +67,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         )
     }
 
-    private fun FetchRates(existingList: MutableList<Currency>) {
+    private fun fetchRates(existingList: MutableList<Currency>) {
         compositeDisposable.add(
             rateRepository.getRates()
                 .map { refreshList(it, existingList) }
