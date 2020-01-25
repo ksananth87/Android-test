@@ -7,6 +7,7 @@ import com.revolut.androidtest.domain.RateRepository
 import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.domain.model.Rates
 import com.revolut.androidtest.view.model.CurrencyList
+import com.revolut.androidtest.view.utils.CurrencyConverter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -24,6 +25,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private lateinit var rates: CurrencyList
     private var enteredCode = ""
     private var enteredAmount: Float = 0f
+    private var enteredRate: Float = 0f
 
     fun fragmentLoaded() {
         showFetchingDialog()
@@ -36,6 +38,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
 
     fun currencyValueUpdated(
         enteredCode: String,
+        enteredRate: Float,
         enteredAmount: Float,
         currentCurrencyList: MutableList<Currency>
     ) {
@@ -43,9 +46,14 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         //Log.e("currencyValueUpdated", "currencyValueUpdated enteredAmount--$enteredAmount")
         this.enteredAmount = enteredAmount
         this.enteredCode = enteredCode
+        this.enteredRate = enteredRate
         val updatedCurrencyList = ArrayList<Currency>()
         for (currency: Currency in currentCurrencyList) {
-            if (currency.code == enteredCode) {
+
+            val currency = Currency(currency.code, CurrencyConverter(enteredAmount, enteredRate).convertTo(currency.rate))
+            updatedCurrencyList.add(currency)
+
+          /*  if (currency.code == enteredCode) {
                 updatedCurrencyList.add(
                     Currency(
                         currency.code,
@@ -59,7 +67,7 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
                         enteredAmount * currency.rate
                     )
                 )
-            }
+            }*/
         }
         refreshedCurrencyListLiveData.postValue(CurrencyList(updatedCurrencyList))
         this.rates = CurrencyList(updatedCurrencyList)
