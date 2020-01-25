@@ -2,7 +2,6 @@ package com.revolut.androidtest.view.adapter
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +13,6 @@ import com.revolut.androidtest.R
 import com.revolut.androidtest.domain.model.Currency
 import com.revolut.androidtest.view.extensions.loadImage
 import java.util.*
-
-
 
 class CountryListAdapter(
     private val textChangeListener: (String, Float) -> Unit
@@ -82,31 +79,19 @@ class CountryListAdapter(
 
     fun updateList(newList: ArrayList<Currency>) {
         //val diffResult = DiffUtil.calculateDiff(CurrencyDiffCallback(this.rates, newList))
-        //diffResult.dispatchUpdatesTo(this)
         newList.forEachIndexed { index, element ->
             notifyItemChanged(index, element)
         }
         rates = newList
     }
 
-    fun moveItem(fromPosition: Int, toPosition: Int) {
+    private fun moveItem(fromPosition: Int, toPosition: Int) {
         if (fromPosition == toPosition) return
         val fromItem = rates[fromPosition]
-        val toItem = rates[toPosition]
-      /*  Collections.swap(
-            rates,
-            fromPosition,
-            toPosition
-        )*/
-
         rates.removeAt(fromPosition)
         rates.add(0, fromItem)
 
         notifyItemMoved(fromPosition, toPosition)
-        //notifyItemRangeChanged(1, rates.size)
-        //notifyItemChanged(fromPosition, toItem)
-        //notifyItemChanged(toPosition, toItem)
-        Log.e("", "")
     }
 
     fun getItems(): MutableList<Currency> {
