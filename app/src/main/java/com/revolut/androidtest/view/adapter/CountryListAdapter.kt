@@ -18,12 +18,13 @@ import java.util.*
 
 
 class CountryListAdapter(
-    private val clickListener: (Int) -> Unit,
-    private val textChangeListener: (Int, String, String) -> Unit
+    private val textChangeListener: (Int, String, Float) -> Unit
 ) :
     RecyclerView.Adapter<CountryListAdapter.ViewHolder>() {
     private var rates: MutableList<Currency> = mutableListOf()
     private lateinit var mRecyclerView: RecyclerView
+    private var editedCode: String = ""
+    private var editedAmount: Float = 0f
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -43,7 +44,8 @@ class CountryListAdapter(
 
         holder.tvCountryCurrency.text = country.code
         holder.tvCountryFullCurrency.text = CountryInfo.valueOf(country.code).countryFullName
-        holder.etRate.setText(country.rate.toString())
+        if (editedCode == "" || editedCode != country.code)
+            holder.etRate.setText(country.rate.toString())
         holder.imgCountryFlag.loadImage(CountryInfo.valueOf(country.code).countryIcon)
         holder.itemView.setOnClickListener {
             country.let {
@@ -53,8 +55,14 @@ class CountryListAdapter(
         }
         holder.etRate.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(edittext: Editable?) {
+                if (holder.etRate.isFocused) {
+                    editedCode = country.code
+                    editedAmount = if (edittext.toString().isEmpty()) 0f
+                    else
+                        edittext.toString().toFloat()
+                    country.let { textChangeListener.invoke(position, country.code, editedAmount) }
+                }
                 //mDiffer.currentList[position].rate = edittext.toString().toFloat()
-                //country.let { textChangeListener.invoke(position, country.code, edittext.toString()) }
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

@@ -24,6 +24,8 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private var errorLiveData: MutableLiveData<Boolean> = MutableLiveData()
     private var moveCurrencyIndexLiveData: MutableLiveData<Int> = MutableLiveData()
     private lateinit var rates: CurrencyList
+    private var enteredCode = ""
+    private var enteredAmount: Float = 0f
 
     fun fragmentLoaded() {
         progressLiveData.value = true
@@ -78,7 +80,25 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         for (oldRates: Currency in existingList) {
             for (newRates: Currency in newRates.countryList) {
                 if (oldRates.code == newRates.code) {
-                    updatedCurrencyList.add(Currency(newRates.code, newRates.rate))
+                    if(enteredCode.isEmpty()) {
+                        updatedCurrencyList.add(Currency(newRates.code, newRates.rate))
+                    } else{
+                        if (oldRates.code == enteredCode) {
+                            updatedCurrencyList.add(
+                                Currency(
+                                    newRates.code,
+                                    enteredAmount
+                                )
+                            )
+                        } else {
+                            updatedCurrencyList.add(
+                                Currency(
+                                    newRates.code,
+                                    enteredAmount * newRates.rate
+                                )
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -119,8 +139,6 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         errorLiveData.value = true
     }
 
-    private fun handleBackgroundError(throwable: Throwable) = Unit //Do nothing
-
     fun showProgressDialog(): LiveData<Boolean> = progressLiveData
 
     fun getRates(): LiveData<CurrencyList> = currencyListLiveData
@@ -136,27 +154,38 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
         compositeDisposable.clear()
     }
 
-    fun currencyChanged(index: Int, code: String, enteredAmount: String) {
+    fun currencyChanged(
+        enteredCode: String,
+        enteredAmount: Float,
+        items: MutableList<Currency>
+    ) {
+        //Log.e("currencyChanged", "currencyChanged enteredCode--$enteredCode")
+        //Log.e("currencyChanged", "currencyChanged enteredAmount--$enteredAmount")
+        this.enteredAmount = enteredAmount
+        this.enteredCode = enteredCode
         val updatedCurrencyList = ArrayList<Currency>()
-        for (currency: Currency in rates.currencyList) {
-            if (currency.code == code) {
+        for (currency: Currency in items) {
+            if (currency.code == enteredCode) {
                 updatedCurrencyList.add(
                     Currency(
                         currency.code,
-                        enteredAmount.toFloat()
+                        enteredAmount
                     )
                 )
             } else {
                 updatedCurrencyList.add(
                     Currency(
                         currency.code,
-                        enteredAmount.toFloat() * currency.rate
+                        enteredAmount * currency.rate
                     )
                 )
             }
         }
-        rates.currencyList = updatedCurrencyList
-        currencyListLiveData.value = rates
+        //rates.currencyList = updatedCurrencyList
+        //currencyListLiveData.value = rates
+
+        refreshedCurrencyListLiveData.postValue(CurrencyList(updatedCurrencyList))
+        this.rates = CurrencyList(updatedCurrencyList)
     }
 
 

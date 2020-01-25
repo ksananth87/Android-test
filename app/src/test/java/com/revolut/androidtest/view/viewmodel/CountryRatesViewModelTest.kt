@@ -132,13 +132,13 @@ class CountryRatesViewModelTest {
         viewModel.fragmentLoaded()
 
         //Act
-        viewModel.currencyChanged(1, "INR", "100")
+        viewModel.currencyChanged("INR", 100f, mutableListOf())
 
         //Assert
         Assert.assertEquals(viewModel.getRates().value?.currencyList?.size, 3)
-        Assert.assertEquals(200.0f, viewModel.getRates().value?.currencyList?.get(0)?.rate)
-        Assert.assertEquals(100.0f, viewModel.getRates().value?.currencyList?.get(1)?.rate)
-        Assert.assertEquals(100.0f, viewModel.getRates().value?.currencyList?.get(2)?.rate)
+        Assert.assertEquals(2.0f, viewModel.getRates().value?.currencyList?.get(0)?.rate)
+        Assert.assertEquals(2.0f, viewModel.getRates().value?.currencyList?.get(1)?.rate)
+        Assert.assertEquals(1.0f, viewModel.getRates().value?.currencyList?.get(2)?.rate)
     }
 
     private fun aDummyRates(base: String): Rates {

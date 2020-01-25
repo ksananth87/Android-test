@@ -25,10 +25,7 @@ class CountryRatesFragment : Fragment() {
     private var disposable: Disposable? = null
 
     private lateinit var viewModel: CountryRatesViewModel
-    private val countryListAdapter = CountryListAdapter(
-        { position -> viewModel.currencyClicked(position) },
-        { position,currency,enteredAmount -> viewModel.currencyChanged(position, currency, enteredAmount) }
-    )
+    private lateinit var countryListAdapter:CountryListAdapter
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -45,6 +42,12 @@ class CountryRatesFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_country_rates, container, false)
 
         viewModel.fragmentLoaded()
+
+        countryListAdapter = CountryListAdapter { position, currency, enteredAmount -> viewModel.currencyChanged(
+            currency,
+            enteredAmount,
+            countryListAdapter.getItems()
+        ) }
 
         return view
     }
