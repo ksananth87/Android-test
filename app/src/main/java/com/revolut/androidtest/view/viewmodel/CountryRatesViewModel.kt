@@ -21,7 +21,6 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private var refreshedCurrencyListLiveData: MutableLiveData<CurrencyList> = MutableLiveData()
     private var errorLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
-    private lateinit var rates: CurrencyList
     private var enteredCode = ""
     private var enteredAmount: Float = 0f
     private var enteredRate: Float? = null
@@ -50,7 +49,6 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
             .enteredRate(enteredRate)
             .getUpdatedList()
         refreshedCurrencyListLiveData.postValue(CurrencyList(updatedList.currencyList))
-        this.rates = updatedList
     }
 
 
@@ -93,12 +91,10 @@ class CountryRatesViewModel(private val rateRepository: RateRepository) : ViewMo
     private fun handleResponse(rates: CurrencyList) {
         dismissFetchingDialog()
         showCurrencyRates(rates)
-        this.rates = rates
     }
 
     private fun handleRefreshRates(rates: CurrencyList) {
         refreshCurrencyRates(rates)
-        this.rates = rates
     }
 
     private fun handleError(throwable: Throwable) {
