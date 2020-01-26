@@ -37,6 +37,13 @@ addons:
     token:
       secure: "eb1b82db1cffdeebb887d3aba7fbc879cfe36986" # encrypted value of your token
 
+# Emulator Management: Create, Start and Wait
+before_script:
+  - echo no | android create avd --force -n test -t android-29 --abi armeabi-v7a
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
+
 script:
   - "./gradlew clean testDebugUnitTestCoverage connectedAndroidTest --no-parallel"
   - "./gradlew sonarqube"
