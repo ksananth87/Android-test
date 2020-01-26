@@ -15,11 +15,20 @@
 
 ## Libraries used
 
-| Library                                                  | Why                                                |
-| ------------- |------------------------------------------|----------------------------------------------------|                                                    |
-| `androidx.navigation:navigation-fragment-ktx:2.2.0`      | Navigation                                         |
-| `androidx.navigation:navigation-ui-ktx:2.2.0`            |                                                    |
-| `com.github.bumptech.glide:glide:4.10.0`                 | Load Image                                         |
+| Libraries        | Why           |
+| ------------- |:-------------:|
+| `androidx.navigation:navigation-fragment-ktx:2.2.0`      | Navigation |
+| `androidx.navigation:navigation-ui-ktx:2.2.0`      |       |
+| `com.github.bumptech.glide:glide:4.10.0`  | Load images      |
+| `com.squareup.retrofit2:retrofit:2.7.0`  | REST Client      |
+| `io.reactivex.rxjava2:rxandroid:2.1.0`  | Asynchronous     |
+| `androidx.lifecycle:lifecycle-extensions:2.1.0`  | LiveData      |
+| TEST |      |
+| `com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0`  | Mock dependencies     |
+| `junit:junit:4.12`  | Junit      |
+| Android Test  |       |
+| `org.mockito:mockito-android:2.18.3`  | Mock Dependencies    |
+| `com.android.support.test:runner:1.0.2`  | Runner and rules      |
 
 ## Run
 To run this project (make sure mobile is connected and usb debugging is enabled):
