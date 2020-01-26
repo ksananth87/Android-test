@@ -10,8 +10,8 @@
 * Used MVVM architectural pattern 
 * Used Android's LiveData to notify changes to Activity
 * Added Test cases for all business logic in Model and ViewModel
-* Added Android Test cases to acceptance criteria.
-* Integrated with Continuous Integration tool (Travis CI) [![Build Status](https://travis-ci.com/ksananth87/Android-test.svg?branch=master)](https://travis-ci.com/ksananth87/Android-test) and Code coverage tool (codecov) [![codecov](https://codecov.io/gh/ksananth87/Android-test/branch/master/graph/badge.svg)](https://codecov.io/gh/ksananth87/Android-test).
+* Added Android Test cases to test acceptance criteria.
+* Integrated with Continuous Integration tool (Travis CI) [![Build Status](https://travis-ci.com/ksananth87/Android-test.svg?branch=master)](https://travis-ci.com/ksananth87/Android-test) , Code coverage tool (codecov) [![codecov](https://codecov.io/gh/ksananth87/Android-test/branch/master/graph/badge.svg)](https://codecov.io/gh/ksananth87/Android-test) and SonarQube [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-white.svg)](https://sonarcloud.io/dashboard?id=ksananth87_Test) for checking code quality.
 * Used Constraint Layout for designing UI
 
 ## Libraries used
