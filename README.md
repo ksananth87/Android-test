@@ -30,8 +30,8 @@ To generate report of tests:
 ```
 $ ./gradlew build jacocoTestReport assembleAndroidTest createDebugCoverageReport
 ```
-## Code Coverage Report
-![](https://github.com/2019-SOW-DEV-003/LeapYears/blob/master/report.png)
+## Project flow
+![](https://github.com/ksananth87/Android-test/blob/master/project_structure.png)
 
 ## Output
 ![](https://github.com/ksananth87/Android-test/blob/master/screenshot.gif)
