@@ -34,4 +34,4 @@ $ ./gradlew build jacocoTestReport assembleAndroidTest createDebugCoverageReport
 ![](https://github.com/2019-SOW-DEV-003/LeapYears/blob/master/report.png)
 
 ## Output
-![](https://github.com/2019-SOW-DEV-003/LeapYears/blob/master/screenshot.gif)
+![](https://github.com/ksananth87/Android-test/blob/master/screenshot.gif)
