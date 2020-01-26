@@ -29,14 +29,14 @@ android:
     - tools
     - tools
     - platform-tools
-    - build-tools-26.0.2
-    - android-26
+    - build-tools-29.0.2
+    - android-29
     - extra
     - sys-img-armeabi-v7a-android-29
   licenses:
-    - 'android-sdk-preview-license-52d11cd2'
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
+    - android-sdk-preview-license-.+
+    - android-sdk-license-.+
+    - google-gdk-license-.+
 
 addons:
   sonarcloud:
