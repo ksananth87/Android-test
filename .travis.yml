@@ -48,9 +48,9 @@ addons:
     token:
       secure: "eb1b82db1cffdeebb887d3aba7fbc879cfe36986" # encrypted value of your token
 
-# Emulator Management: Create, Start and Wait
-    #before_script:
-    #- android-update-sdk --components=sys-img-$ABI-$API --accept-licenses='android-sdk-license-[0-9a-f]{8}'
+ Emulator Management: Create, Start and Wait
+    before_script:
+    - android-update-sdk --components=sys-img-$ABI-$API --accept-licenses='android-sdk-license-[0-9a-f]{8}'
     #- echo no | android create avd --force -n test -t $API --abi $ABI
     #- emulator -avd test -no-audio -no-window
     #- android-wait-for-emulator
