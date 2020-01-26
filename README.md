@@ -16,10 +16,10 @@
 ## Libraries used
 
 | Library                                                  | Why                                                |
-| ------------- |:-------------:                           |
+| ------------- |:-------------:                           |                                                    |
 | `androidx.navigation:navigation-fragment-ktx:2.2.0`      | Navigation                                         |
-| `androidx.navigation:navigation-ui-ktx:2.2.0`            |                                            |
-| `com.github.bumptech.glide:glide:4.10.0`                 | Load Image                                          |
+| `androidx.navigation:navigation-ui-ktx:2.2.0`            |                                                    |
+| `com.github.bumptech.glide:glide:4.10.0`                 | Load Image                                         |
 
 ## Run
 To run this project (make sure mobile is connected and usb debugging is enabled):
