@@ -52,7 +52,7 @@ $ ./gradlew build jacocoTestReport assembleAndroidTest createDebugCoverageReport
 ![](https://github.com/ksananth87/Android-test/blob/master/project_structure.png)
 
 ## Project folder structure
-![](https://github.com/ksananth87/Android-test/blob/master/project.png=500x540)
+![](https://github.com/ksananth87/Android-test/blob/master/project.png)
 
 ## Output
 ![](https://github.com/ksananth87/Android-test/blob/master/screenshot.gif)
