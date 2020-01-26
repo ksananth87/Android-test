@@ -11,6 +11,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest{
 
@@ -20,6 +21,7 @@ class MainActivityTest{
 
     @Test
     fun shouldShowTitleBarWhenAppLaunched() {
-        onView(withId(R.id.toolbar_main_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.toolbar_main_title)).check(matches(isDisplayed()))
     }
+
 }
