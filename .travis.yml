@@ -30,6 +30,7 @@ android:
     - android-${ANDROID_API}
     - build-tools-${ANDROID_BUILD_TOOLS}
     - extra
+    - sys-img-armeabi-v7a-android-29
 
 addons:
   sonarcloud:
