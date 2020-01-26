@@ -133,6 +133,6 @@ class CountryRatesFragment : Fragment() {
     }
 
     companion object {
-        const val REFRESH_IN_SEC = 4L
+        const val REFRESH_IN_SEC = 1L
     }
 }
