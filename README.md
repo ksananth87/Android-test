@@ -2,6 +2,7 @@
 ## Android Test
 [![Build Status](https://travis-ci.com/ksananth87/Android-test.svg?branch=master)](https://travis-ci.com/ksananth87/Android-test)
 [![codecov](https://codecov.io/gh/ksananth87/Android-test/branch/master/graph/badge.svg)](https://codecov.io/gh/ksananth87/Android-test)
+[![awsome-kotlin](https://camo.githubusercontent.com/a0afa2c788fcce72a8d0983a6d6c11cfeaf7f5a9/68747470733a2f2f6b6f746c696e2e6c696e6b2f617765736f6d652d6b6f746c696e2e737667)](https://camo.githubusercontent.com/a0afa2c788fcce72a8d0983a6d6c11cfeaf7f5a9/68747470733a2f2f6b6f746c696e2e6c696e6b2f617765736f6d652d6b6f746c696e2e737667)
 
 
 ## Key points to highlight about this kata:
