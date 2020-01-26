@@ -38,7 +38,7 @@ addons:
       secure: "eb1b82db1cffdeebb887d3aba7fbc879cfe36986" # encrypted value of your token
 
 script:
-  - "./gradlew clean testDebugUnitTestCoverage assembleAndroidTest --no-parallel"
+  - "./gradlew clean testDebugUnitTestCoverage connectedAndroidTest --no-parallel"
   - "./gradlew sonarqube"
 
 after_success:
