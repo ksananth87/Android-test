@@ -7,6 +7,7 @@
 
 ## Key points to highlight about this kata:
 * Followed Test Driven Development
+* Used kotlin
 * Used MVVM architectural pattern 
 * Used Android's LiveData to notify changes to Activity
 * Added Test cases for all business logic in Model and ViewModel
