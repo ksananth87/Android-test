@@ -13,6 +13,14 @@
 * Integrated with Continous Integration tool (Travis CI) [![Build Status](https://travis-ci.com/ksananth87/Android-test.svg?branch=master)](https://travis-ci.com/ksananth87/Android-test) and Code coverage tool (codecov) [![codecov](https://codecov.io/gh/ksananth87/Android-test/branch/master/graph/badge.svg)](https://codecov.io/gh/ksananth87/Android-test).
 * Used Constraint Layout for designing UI
 
+## Libraries used
+
+| Library                                                  | Why                                                |
+| ------------- |:-------------:                           |
+| `androidx.navigation:navigation-fragment-ktx:2.2.0`      | Navigation                                         |
+| `androidx.navigation:navigation-ui-ktx:2.2.0`            |                                            |
+| `com.github.bumptech.glide:glide:4.10.0`                 | Load Image                                          |
+
 ## Run
 To run this project (make sure mobile is connected and usb debugging is enabled):
 
