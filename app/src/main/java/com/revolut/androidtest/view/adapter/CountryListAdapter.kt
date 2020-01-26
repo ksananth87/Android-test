@@ -41,9 +41,7 @@ class CountryListAdapter(
 
         holder.tvCountryCurrency.text = country.code
         holder.tvCountryFullCurrency.text = CountryInfo.valueOf(country.code).countryFullName
-        if (editedCode == "" || editedCode != country.code) {
-            holder.etRate.setText(country.rate.toString())
-        }
+        holder.etRate.setText(editedCode, country.code, country.rate.toString())
         holder.imgCountryFlag.loadImage(CountryInfo.valueOf(country.code).countryIcon)
         holder.itemView.setOnClickListener {
             country.let {
@@ -113,5 +111,15 @@ class CountryListAdapter(
 
     companion object {
         const val TOP_POSITION = 0
+    }
+}
+
+private fun EditText.setText(editedCode: String, code: String, rate: String) {
+    if (editedCode == "" || editedCode != code) {
+        if (rate == "0.0") {
+            text = null
+        } else {
+            setText(rate)
+        }
     }
 }

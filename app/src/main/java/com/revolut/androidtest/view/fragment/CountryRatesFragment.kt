@@ -56,11 +56,11 @@ class CountryRatesFragment : Fragment() {
     }
 
     private fun initiateAdapter() {
-        countryListAdapter = CountryListAdapter { currency,enteredRater, enteredAmount ->
+        countryListAdapter = CountryListAdapter { currency,enteredCurrencyRate, enteredAmountFromEdittext ->
             viewModel.currencyValueUpdated(
                 currency,
-                enteredRater,
-                enteredAmount,
+                enteredCurrencyRate,
+                enteredAmountFromEdittext,
                 countryListAdapter.getItems()
             )
         }
